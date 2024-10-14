@@ -12,11 +12,18 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @PostMapping
-    public ResponseEntity<String>logout(@RequestBody UserLogoutRequestDTO requestDTO){
-        String response= userService.logout(requestDTO);
-        return  new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    @PostMapping("atm/user/logout")
+    public ResponseEntity<?>logout(@RequestBody UserLogoutRequestDTO requestDTO){
+
+      try{
+           userService.logout(requestDTO.getToken());
+        return   ResponseEntity.ok("Logout successful. Token invalidated.");
+    }catch (Exception e){
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: "+e.getMessage());
+
+      }
+
+      }
 
 }
 
