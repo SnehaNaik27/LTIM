@@ -18,19 +18,19 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "USER_Id")
     private Long userId;
 
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String name;
 
-    @Column(name = "address")
+    @Column(name = "ADDRESS")
     private String address;
 
-    @Column(name = "pin")
+    @Column(name = "PIN")
     private String pin;
 
-    @Column(name="contact")
+    @Column(name="CONTACT")
     private String contact;
 
    @OneToMany(mappedBy = "userId",cascade = CascadeType.ALL,orphanRemoval = true)
