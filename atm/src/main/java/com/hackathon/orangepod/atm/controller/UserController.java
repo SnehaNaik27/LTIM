@@ -1,11 +1,15 @@
 package com.hackathon.orangepod.atm.controller;
 
 import com.hackathon.orangepod.atm.DTO.UserLogoutRequest;
+import com.hackathon.orangepod.atm.DTO.ATMResponse;
+import com.hackathon.orangepod.atm.DTO.UserDto;
+import com.hackathon.orangepod.atm.DTO.UserLogoutRequestDTO;
 import com.hackathon.orangepod.atm.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+     UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @PostMapping("atm/user/create")
+    public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
+        ATMResponse response = userService.createAccount(userDto);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("atm/user/logout/{userId}")
@@ -30,8 +36,6 @@ public class UserController {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: " + e.getMessage());
         }
-
     }
-
 }
 

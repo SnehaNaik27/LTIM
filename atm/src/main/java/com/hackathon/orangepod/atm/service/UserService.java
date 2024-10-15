@@ -1,6 +1,6 @@
 package com.hackathon.orangepod.atm.service;
 
-import com.hackathon.orangepod.atm.DTO.UserLogoutRequest;
+<<<<<<< HEAD
 import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.UserTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class UserService {
         // Check if the token exists for the given account and is not expired
 
 
-            Optional<UserToken> userTokenOpt = userTokenRepository.findByTokenByUserId(userId);
+            Optional<UserToken> userTokenOpt = userTokenRepository.findTokenByUserId(userId);
             System.out.println("uuseu "+userTokenOpt.get().getToken());
             if (userTokenOpt.isPresent()) {
                 UserToken userToken = userTokenOpt.get();
@@ -38,6 +38,28 @@ public class UserService {
         }
 
 
+=======
+import com.hackathon.orangepod.atm.DTO.*;
 
+import com.hackathon.orangepod.atm.model.Account;
+import com.hackathon.orangepod.atm.model.User;
+import com.hackathon.orangepod.atm.repository.UserRepository;
+import com.hackathon.orangepod.atm.utils.AccountUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+>>>>>>> 6d26138d323ff2f91e560bc334ce94781825d15a
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+<<<<<<< HEAD
+=======
+public interface UserService {
+
+    public ATMResponse createAccount(UserDto userDTO);
+
+    public UserLoginResponse login(UserLoginRequest request);
+
+    public void logout(String token);
+>>>>>>> 6d26138d323ff2f91e560bc334ce94781825d15a
 

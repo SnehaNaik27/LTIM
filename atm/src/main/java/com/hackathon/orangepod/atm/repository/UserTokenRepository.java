@@ -15,12 +15,7 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
     //Optional<UserToken> findByTokenAndIsExpiredFalse(String token);
 
     @Query("select t from UserToken t where t.isExpired = false And t.userId= :userId")
+    Optional<UserToken> findTokenByUserId(@Param("userId") Long userId);
 
-
-         Optional<UserToken> findByTokenByUserId(@Param("userId") Long userId);
-
-
-
-     //UserToken save(UserToken userToken);
+    UserToken findByAccountNumber(String accountNumber);
 }
-

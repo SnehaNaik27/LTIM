@@ -26,5 +26,4 @@ public class UserToken {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User userId;
-
 }
