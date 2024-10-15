@@ -20,9 +20,12 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long AccountId;
-    private long AccountNumber;
-    private BigDecimal Balance;
+    @Column(name="ACCOUNTID")
+    private long accountId;
+    @Column(name="ACCOUNT_NUMBER")
+    private  long accountNumber;
+    @Column(name="BALANCE")
+    private double balance;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

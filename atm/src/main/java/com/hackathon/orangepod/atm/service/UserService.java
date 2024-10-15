@@ -9,12 +9,15 @@ import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.hackathon.orangepod.atm.Dto.UserLogoutRequestDTO;
+
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -42,7 +45,7 @@ public class UserService {
         List<Account> accounts = userDTO.getAccounts().stream().map(accountDTO -> {
             Account account = new Account();
             account.setAccountNumber(AccountUtils.generateAccountNumber());
-            account.setBalance(BigDecimal.ZERO);;
+            account.setBalance(0);;
             account.setUser(newUser);
             return account;
         }).collect(Collectors.toList());
@@ -56,7 +59,7 @@ public class UserService {
         List<AccountDto> accountDtos = savedUser.getAccounts().stream().map(account ->
                 AccountDto.builder()
                         .accountNumber(account.getAccountNumber())
-                        .balance(account.getBalance())
+                        .balance(0.0)
                         .build()
         ).collect(Collectors.toList());
 
@@ -67,4 +70,16 @@ public class UserService {
                 .accountDtos(accountDtos) // You can set account details here if needed
                 .build();
     }
+//@Autowire
+    public void logout( String token){
+//        boolean istokenInvalid=true;
+//        if(istokenInvalid){
+//            return "Logout successful";
+//        }else {
+//            return "Logout failed: Invalid token";
+//        }
+
+
+    }
+
 }

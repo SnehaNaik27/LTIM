@@ -13,5 +13,5 @@ import java.math.BigDecimal;
 @Builder
 public class AccountDto {
     private long accountNumber;
-    private BigDecimal balance;
+    private double balance;
 }
