@@ -1,11 +1,12 @@
 package com.hackathon.orangepod.atm.DTO;
+
 import lombok.Data;
 
 @Data
-public class AccountBalanceRequestDTO {
+public class AccountOperationRequestDTO {
 
     private Long accountId;
-    private double balance;
+    private double amount;
     private String token;
 
 }

@@ -1,15 +1,14 @@
 package com.hackathon.orangepod.atm.service.impl;
 
-import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDTO;
-import com.hackathon.orangepod.atm.DTO.DepositRequestDto;
+import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.DTO.DepositResponseDto;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
+import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.model.User;
-import com.hackathon.orangepod.atm.model.UserAccount;
+import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.AccountRepository;
-import com.hackathon.orangepod.atm.repository.UserAccountRepository;
 import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.repository.UserTokenRepository;
 import com.hackathon.orangepod.atm.service.AccountService;
@@ -30,29 +29,34 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private UserTokenRepository userTokenRepository;
 
-    @Autowired
-    private UserAccountRepository userAccountRepository;
+    public void withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException, AccountNotFoundException {
+        Optional<UserToken> userToken = userTokenRepository.findByToken(requestDto.getToken());
 
-    @Autowired
-    private UserAccountRepository userccountRepository;
+        if (userToken.isEmpty()){
+            throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
+        }
 
-    public void withdraw(Long accountId, Double amount) throws InsufficientFundsException, AccountNotFoundException {
-        Account account = accountRepository.findById(accountId)
+        Account account = accountRepository.findById(requestDto.getAccountId())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
-        if (account.getBalance() < amount) {
+        if (account.getBalance() < requestDto.getAmount()) {
             throw new InsufficientFundsException("Insufficient funds");
         }
 
-        account.setBalance(account.getBalance() - amount);
+        account.setBalance(account.getBalance() - requestDto.getAmount());
         accountRepository.save(account);
     }
 
 
-    public DepositResponseDto deposit(DepositRequestDto depositRequestDto) throws AccountNotFoundException {
+    public DepositResponseDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
+        Optional<UserToken> userToken = userTokenRepository.findByToken(depositRequestDto.getToken());
+
+        if (userToken.isEmpty()){
+            throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
+        }
+
         Account account = accountRepository.findById(depositRequestDto.getAccountId())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
 
         account.setBalance(account.getBalance() + depositRequestDto.getAmount());
         accountRepository.save(account);
@@ -64,25 +68,28 @@ public class AccountServiceImpl implements AccountService {
         return depositResponseDto;
     }
 
-    public double getBalance(AccountBalanceRequestDTO requestDTO){
-        User user = userTokenRepository.findByToken(requestDTO.getToken());
+    public double getBalance(AccountOperationRequestDTO requestDTO) throws InvalidTokenException, AccountNotFoundException {
+        Optional<UserToken> userToken = userTokenRepository.findByToken(requestDTO.getToken());
 
-        if (user ==null){
-            throw new RuntimeException("Invalid token");
+        if (userToken.isEmpty()){
+            throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
 
         Optional<Account> account = accountRepository.findById(requestDTO.getAccountId());
 
-        if (!account.isPresent()){
+        if (account.isEmpty()){
 
-            throw new RuntimeException("Account not found");
+            throw new AccountNotFoundException("Account not found");
         }
 
-        UserAccount userAccount = userAccountRepository.findByUserAndAccount(user,account.get());
-        if (userAccount==null){
+        if (account.get().getUsers().isEmpty()){
             throw new RuntimeException("User is not associated with this account");
         }
 
         return account.get().getBalance();
+    }
+
+    public Account save(Account account) {
+        return accountRepository.save(account);
     }
 }

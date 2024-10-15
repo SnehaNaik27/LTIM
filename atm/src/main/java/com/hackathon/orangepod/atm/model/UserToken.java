@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "USER_TOKEN")
+@Table(name = "USER_TOKEN", schema="public")
 @Builder
 public class UserToken {
     @Id
@@ -23,7 +23,7 @@ public class UserToken {
     @Column(name = "ISEXPIRED")
     private boolean isExpired;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "userId", nullable = false)
-    private User userId;
+    private User user;
 }

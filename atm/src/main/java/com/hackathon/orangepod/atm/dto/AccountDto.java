@@ -1,4 +1,4 @@
-package com.hackathon.orangepod.atm.dto;
+package com.hackathon.orangepod.atm.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class AccountDto {
-    private long accountNumber;
+    private String accountNumber;
     private double balance;
+    private Long accountId;
 }

@@ -9,7 +9,8 @@ public class AccountUtils {
 
     public static final String ACCOUNT_CREATION_SUCCESS = "002";
     public static final String ACCOUNT_CREATION_MESSAGE = "Account has been Successfully created";
-    public static long generateAccountNumber(){
+
+    public static String generateAccountNumber(){
         Year currentYear = Year.now();
 
         int min = 100000;
@@ -27,9 +28,7 @@ public class AccountUtils {
 
 
         // Convert the concatenated string to a long
-        return Long.parseLong(accountNumberStr);
-//        StringBuilder accountNumber = new StringBuilder();
-//        return accountNumber.append(year).append(randomNumber).toString();
+        return accountNumberStr;
 
     }
 }

@@ -1,5 +1,6 @@
 package com.hackathon.orangepod.atm.repository;
 
+import com.hackathon.orangepod.atm.model.User;
 import com.hackathon.orangepod.atm.model.UserToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +12,10 @@ import java.util.Optional;
 @Repository
 public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
 
-
-    //Optional<UserToken> findByTokenAndIsExpiredFalse(String token);
-
-    @Query("select t from UserToken t where t.isExpired = false And t.userId= :userId")
+    @Query("select t from UserToken t join t.user u " +
+            "where t.isExpired = false And u.userId= :userId")
     Optional<UserToken> findTokenByUserId(@Param("userId") Long userId);
 
-    UserToken findByAccountNumber(String accountNumber);
+    @Query("select t from UserToken t where t.isExpired = false And t.token= :token")
+    Optional<UserToken> findByToken(@Param("token") String token);
 }

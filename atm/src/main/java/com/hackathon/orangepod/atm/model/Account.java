@@ -9,12 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="Account")
+@Table(name="ACCOUNT", schema="public")
 @Entity
 public class Account {
 
@@ -23,12 +24,10 @@ public class Account {
     @Column(name="ACCOUNTID")
     private long accountId;
     @Column(name="ACCOUNT_NUMBER")
-    private  long accountNumber;
+    private String accountNumber;
     @Column(name="BALANCE")
     private double balance;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
+    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.MERGE)
+    private List<User> users;
 }

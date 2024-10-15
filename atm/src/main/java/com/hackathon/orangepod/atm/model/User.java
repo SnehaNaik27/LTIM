@@ -15,31 +15,31 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "USER")
+@Table(name = "USER", schema="public")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USERID")
+    private Long userId;
 
+    @Column(name = "NAME")
+    private String name;
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "USER_ID")
-        private Long userId;
+    @Column(name = "ADDRESS")
+    private String address;
 
-        @Column(name = "NAME")
-        private String name;
+    @Column(name = "PIN")
+    private Long pin;
 
-        @Column(name = "ADDRESS")
-        private String address;
+    @Column(name="CONTACT")
+    private Long contact;
 
-        @Column(name = "PIN")
-        private String pin;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<UserToken> token;
 
-        @Column(name="CONTACT")
-        private String contact;
-
-        @OneToMany(mappedBy = "userId",cascade = CascadeType.ALL,orphanRemoval = true)
-        private List<UserToken> token;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name="user_account",
+    joinColumns = @JoinColumn(name="userId"), inverseJoinColumns = @JoinColumn(name="accountId"))
     private List<Account> accounts;
 
 }

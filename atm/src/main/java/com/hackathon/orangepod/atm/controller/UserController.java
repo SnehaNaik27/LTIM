@@ -1,34 +1,35 @@
 package com.hackathon.orangepod.atm.controller;
 
-import com.hackathon.orangepod.atm.DTO.UserLogoutRequest;
 import com.hackathon.orangepod.atm.DTO.ATMResponse;
 import com.hackathon.orangepod.atm.DTO.UserDto;
-import com.hackathon.orangepod.atm.DTO.UserLogoutRequestDTO;
+import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
+import com.hackathon.orangepod.atm.DTO.UserLoginResponse;
 import com.hackathon.orangepod.atm.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/atm/user")
 public class UserController {
 
     @Autowired
-     UserService userService;
+    UserService userService;
 
-    @PostMapping("atm/user/create")
+    @PostMapping("/create")
     public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
-        ATMResponse response = userService.createAccount(userDto);
+        ATMResponse response = userService.createUser(userDto);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("atm/user/logout/{userId}")
-    public ResponseEntity<?> logout(@PathVariable Long userId ) {
+    @PostMapping("/login")
+    public UserLoginResponse login (@RequestBody UserLoginRequest request){
+        return userService.login(request);
+    }
 
+    @PostMapping("/logout/{userId}")
+    public ResponseEntity<?> logout(@PathVariable Long userId ) {
         try {
             String logoutMessage = userService.logout(userId);
             return ResponseEntity.ok(logoutMessage);
