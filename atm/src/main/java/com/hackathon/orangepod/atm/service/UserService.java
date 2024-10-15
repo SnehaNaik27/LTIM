@@ -14,17 +14,12 @@ public class UserService {
     @Autowired
     UserTokenRepository userTokenRepository;
 
-    @Autowired
-    UserLogoutRequest userLogoutRequest;
 
-    public String logout(UserLogoutRequest logoutRequest) {
-
-        String accountNumber = logoutRequest.getAccountNumber();
-        String token = logoutRequest.getToken();
+    public String logout(Long userId) {
 
         // Check if the token exists for the given account and is not expired
 
-        Optional<UserToken> userTokenOpt = userTokenRepository.findByAccountNumberAndToken(accountNumber, token);
+        Optional<UserToken> userTokenOpt = userTokenRepository.findByTokenByUserId(userId);
 
         if (userTokenOpt.isPresent()) {
             UserToken userToken = userTokenOpt.get();
@@ -36,5 +31,6 @@ public class UserService {
             return "Invalid token or account number";
         }
     }
+
 
 }
