@@ -1,14 +1,15 @@
-package com.hackathon.orangepod.atm.service;
+package com.hackathon.orangepod.atm.service.impl;
 
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.repository.AccountRepository;
+import com.hackathon.orangepod.atm.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccountService {
+public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -24,21 +25,4 @@ public class AccountService {
         account.setBalance(account.getBalance() - amount);
         accountRepository.save(account);
     }
-
-
-	public DepositResponseDto deposit(DepositRequestDto depositRequestDto) throws AccountNotFoundException {
-		 Account account = accountRepository.findById(depositRequestDto.getAccountId())
-	                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
-
-	        account.setBalance(account.getBalance() + depositRequestDto.getAmount());
-	        accountRepository.save(account);
-
-	        DepositResponseDto depositResponseDto = new DepositResponseDto();
-	        depositResponseDto.setAccountId(account.getAccountId());
-	        depositResponseDto.setAccountNumber(account.getAccountNumber());
-	        depositResponseDto.setBalance(account.getBalance());
-			return depositResponseDto;
-	    }
-
 }

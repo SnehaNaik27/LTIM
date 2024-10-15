@@ -1,26 +1,30 @@
-package com.hackathon.orangepod.atm.service;
+package com.hackathon.orangepod.atm.service.impl;
 
-import com.hackathon.orangepod.atm.Dto.ATMResponse;
-import com.hackathon.orangepod.atm.Dto.AccountDto;
-import com.hackathon.orangepod.atm.Dto.UserDto;
+
+import com.hackathon.orangepod.atm.DTO.*;
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.model.User;
+import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.UserRepository;
+import com.hackathon.orangepod.atm.repository.UserTokenRepository;
+import com.hackathon.orangepod.atm.service.UserService;
 import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hackathon.orangepod.atm.Dto.UserLogoutRequestDTO;
 
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-
-public class UserService {
+public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserTokenRepository userTokenRepository;
 
     public ATMResponse createAccount(UserDto userDTO) {
         // Check if user already exists by contact number
@@ -70,7 +74,25 @@ public class UserService {
                 .accountDtos(accountDtos) // You can set account details here if needed
                 .build();
     }
-//@Autowire
+
+    public UserLoginResponse login(UserLoginRequest request) {
+        //Business logic to validate account and pin
+
+        String token = UUID.randomUUID().toString();
+
+        UserToken userToken = new UserToken();
+        userToken.setAccountNumber(request.getAccountNumber());
+        userToken.setToken(token);
+        userTokenRepository.save(userToken);
+
+        UserLoginResponse response = new UserLoginResponse();
+        response.setToken(token);
+        response.setMessage("Login successful");
+
+        return response;
+    }
+
+    //@Autowire
     public void logout( String token){
 //        boolean istokenInvalid=true;
 //        if(istokenInvalid){
@@ -80,6 +102,6 @@ public class UserService {
 //        }
 
 
-    }
 
+    }
 }
