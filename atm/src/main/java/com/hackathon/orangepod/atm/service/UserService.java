@@ -11,25 +11,40 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
+    //@Autowired
     UserTokenRepository userTokenRepository;
 
+    public UserService(UserTokenRepository userTokenRepository) {
+        this.userTokenRepository = userTokenRepository;
+    }
 
     public String logout(Long userId) {
 
         // Check if the token exists for the given account and is not expired
 
-        Optional<UserToken> userTokenOpt = userTokenRepository.findByTokenByUserId(userId);
+        try {
+            Optional<UserToken> userTokenOpt = userTokenRepository.findByTokenByUserId(userId);
+            System.out.println("uuseu "+userTokenOpt.get().getToken());
+            if (userTokenOpt.isPresent()) {
+                UserToken userToken = userTokenOpt.get();
 
-        if (userTokenOpt.isPresent()) {
-            UserToken userToken = userTokenOpt.get();
-            // Mark the token as expired
-            userToken.setExpired(true);
-            userTokenRepository.save(userToken);
-            return "Logout successful";
-        } else {
-            return "Invalid token or account number";
+                // Mark the token as expired
+                userToken.setExpired(true);
+                System.out.println("before update status as true");
+                userTokenRepository.save(userToken);
+                System.out.println("after update status as true");
+                return "Logout successful";
+            } else {
+                System.out.println("inside if");
+                return "Invalid token or account number";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("exception occure while fetching the data"+ e.getMessage());
+
+            return e.getMessage();
         }
+
     }
 
 

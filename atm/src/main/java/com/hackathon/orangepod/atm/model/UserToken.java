@@ -1,10 +1,7 @@
 package com.hackathon.orangepod.atm.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Setter
@@ -13,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "USER_TOKEN")
+@Builder
 public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +19,44 @@ public class UserToken {
     @Column(name="token")
     private String token;
 
-    private boolean expired;
+    @Column(name="isExpired")
+    private boolean isExpired;
 
    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User userId;
 
+    public Long getTokenId() {
+        return tokenId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setTokenId(Long tokenId) {
+        this.tokenId = tokenId;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
 
 
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public boolean isExpired() {
+        return isExpired;
+    }
+
+    public void setExpired(boolean expired) {
+        isExpired = expired;
+    }
 }

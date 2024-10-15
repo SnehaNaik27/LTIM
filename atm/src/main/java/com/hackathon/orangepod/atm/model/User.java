@@ -30,8 +30,12 @@ public class User {
     @Column(name = "pin")
     private String pin;
 
+    @Column(name="contact")
+    private String contact;
+
    @OneToMany(mappedBy = "userId",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<UserToken>token;
+    private List<UserToken> token;
+
 
 
 }

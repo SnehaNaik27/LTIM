@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
-    @Autowired
+   // @Autowired
     private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("atm/user/logout/{userId}")
     public ResponseEntity<?> logout(@PathVariable Long userId ) {
@@ -23,6 +27,7 @@ public class UserController {
             String logoutMessage = userService.logout(userId);
             return ResponseEntity.ok(logoutMessage);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: " + e.getMessage());
         }
 
