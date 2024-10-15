@@ -1,7 +1,7 @@
 package com.hackathon.orangepod.atm.controller;
 
-import com.hackathon.orangepod.atm.dto.UserLoginRequest;
-import com.hackathon.orangepod.atm.dto.UserLoginResponse;
+import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
+import com.hackathon.orangepod.atm.DTO.UserLoginResponse;
 import com.hackathon.orangepod.atm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
