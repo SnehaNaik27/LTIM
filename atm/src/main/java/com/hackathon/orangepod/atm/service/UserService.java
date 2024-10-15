@@ -1,85 +1,23 @@
 package com.hackathon.orangepod.atm.service;
 
-import com.hackathon.orangepod.atm.Dto.ATMResponse;
-import com.hackathon.orangepod.atm.Dto.AccountDto;
-import com.hackathon.orangepod.atm.Dto.UserDto;
+import com.hackathon.orangepod.atm.DTO.*;
+
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.model.User;
 import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hackathon.orangepod.atm.Dto.UserLogoutRequestDTO;
 
-
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+public interface UserService {
 
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    public ATMResponse createAccount(UserDto userDTO);
 
-    public ATMResponse createAccount(UserDto userDTO) {
-        // Check if user already exists by contact number
-        if (userRepository.existsByContact(userDTO.getContact())) {
-            return ATMResponse.builder()
-                    .responseCode(AccountUtils.ACCOUNT_EXIST_CODE)
-                    .responseMessage(AccountUtils.ACCOUNT_EXIST_MESSAGE)
-                    .accountDtos(null)
-                    .build();
-        }
+    public UserLoginResponse login(UserLoginRequest request);
 
-        // Create new User
-        User newUser = User.builder()
-                .name(userDTO.getName())
-                .address(userDTO.getAddress())
-                .contact(userDTO.getContact())
-                .pin(userDTO.getPin())
-                .build();
-
-
-        // Create Accounts
-        List<Account> accounts = userDTO.getAccounts().stream().map(accountDTO -> {
-            Account account = new Account();
-            account.setAccountNumber(AccountUtils.generateAccountNumber());
-            account.setBalance(0);;
-            account.setUser(newUser);
-            return account;
-        }).collect(Collectors.toList());
-
-        newUser.setAccounts(accounts);
-
-        // Save User and Accounts
-        User savedUser = userRepository.save(newUser);
-
-        // Map Account entities to AccountDto
-        List<AccountDto> accountDtos = savedUser.getAccounts().stream().map(account ->
-                AccountDto.builder()
-                        .accountNumber(account.getAccountNumber())
-                        .balance(0.0)
-                        .build()
-        ).collect(Collectors.toList());
-
-        // Prepare Response
-        return ATMResponse.builder()
-                .responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
-                .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
-                .accountDtos(accountDtos) // You can set account details here if needed
-                .build();
-    }
-//@Autowire
-    public void logout( String token){
-//        boolean istokenInvalid=true;
-//        if(istokenInvalid){
-//            return "Logout successful";
-//        }else {
-//            return "Logout failed: Invalid token";
-//        }
-
-
-    }
+    public void logout(String token);
 
 }

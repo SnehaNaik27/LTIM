@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-package com.hackathon.orangepod.atm.dto;
-=======
 package com.hackathon.orangepod.atm.DTO;
->>>>>>> ea6fdba9b20467bc502b9b31d53cdf2c7ed47168
 
 public class UserLogoutRequestDTO {
 

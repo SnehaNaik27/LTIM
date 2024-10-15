@@ -4,7 +4,7 @@ import lombok.Data;
 @Data
 public class AccountBalanceRequestDTO {
 
-    private String accountNumber;
+    private Long accountId;
     private double balance;
     private String token;
 

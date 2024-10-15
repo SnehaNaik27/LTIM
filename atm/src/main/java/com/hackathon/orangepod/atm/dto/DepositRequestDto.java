@@ -1,4 +1,4 @@
-package com.hackathon.orangepod.atm.dto;
+package com.hackathon.orangepod.atm.DTO;
 
 import lombok.Data;
 import lombok.Getter;

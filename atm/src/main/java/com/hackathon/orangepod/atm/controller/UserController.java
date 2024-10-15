@@ -1,9 +1,8 @@
 package com.hackathon.orangepod.atm.controller;
 
-import com.hackathon.orangepod.atm.dto.ATMResponse;
-import com.hackathon.orangepod.atm.dto.AccountDto;
-import com.hackathon.orangepod.atm.dto.UserDto;
-import com.hackathon.orangepod.atm.dto.UserLogoutRequestDTO;
+import com.hackathon.orangepod.atm.DTO.ATMResponse;
+import com.hackathon.orangepod.atm.DTO.UserDto;
+import com.hackathon.orangepod.atm.DTO.UserLogoutRequestDTO;
 import com.hackathon.orangepod.atm.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
