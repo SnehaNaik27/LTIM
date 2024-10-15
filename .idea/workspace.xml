@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="138de904-38d3-4854-9168-39401c75b7eb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/DTO/UserLogoutRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/DTO/UserLogoutRequest.java" afterDir="false" />
+    <list default="true" id="1b116174-edf9-417f-a5cf-c551ef0ffe67" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/model/UserToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/model/UserToken.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/repository/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/repository/AccountRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/repository/UserTokenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/repository/UserTokenRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/atm/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/atm/src/main/resources/application.properties" afterDir="false" />
@@ -19,108 +19,45 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="UserLogout" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Akvasu24&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/SnehaNaik27/LTIM.git&quot;,
-    &quot;accountId&quot;: &quot;33b085d5-7861-47ca-826e-36854aa57997&quot;
-  }
-}</component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="2nI5SewuDVJV1cM0aKn6h2QyUmG" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2nTHuRZaMwmSelmqFqjYInx9k5R" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.AtmsimulationApplication.executor": "Run",
-    "JUnit.All in atm.executor": "Run",
+    "Application.ATM.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "UserLogout",
+    "git-widget-placeholder": "userLogout",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Hackthon/logout/LTIM"
+    "last_opened_file_path": "C:/Users/10822013/new_UPI_1/LTIM"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.AtmsimulationApplication">
-    <configuration name="AtmsimulationApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager">
+    <configuration name="ATM" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-23" />
       <option name="MAIN_CLASS_NAME" value="com.hackathon.orangepod.atm.AtmsimulationApplication" />
       <module name="atm" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hackathon.orangepod.atm.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="All in atm" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="atm" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.AtmsimulationApplication" />
-        <item itemvalue="JUnit.All in atm" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="138de904-38d3-4854-9168-39401c75b7eb" name="Changes" comment="" />
-      <created>1728647750692</created>
+      <changelist id="1b116174-edf9-417f-a5cf-c551ef0ffe67" name="Changes" comment="" />
+      <created>1728990368019</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1728647750692</updated>
+      <updated>1728990368019</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/atm/src/main/java/com/hackathon/orangepod/atm/controller/UserController.java</url>
-          <line>22</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
