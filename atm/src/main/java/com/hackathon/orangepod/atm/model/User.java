@@ -3,6 +3,10 @@ package com.hackathon.orangepod.atm.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
+
+import org.springframework.boot.autoconfigure.web.WebProperties;
+
+
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,9 +17,11 @@ import java.util.List;
 @Entity
 @Table(name = "USER")
 public class User {
+
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "USER_Id")
+        @Column(name = "USER_ID")
         private Long userId;
 
         @Column(name = "NAME")
@@ -35,4 +41,5 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Account> accounts;
+
 }

@@ -1,41 +1,29 @@
 package com.hackathon.orangepod.atm.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@Table(name = "USER_TOKEN")
+@Builder
 public class UserToken {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "TOKENID")
+    private Long tokenId;
 
-    private Long id;
-    private String accountNumber;
+    @Column(name = "TOKEN")
     private String token;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "ISEXPIRED")
+    private boolean isExpired;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
+    private User userId;
 }
