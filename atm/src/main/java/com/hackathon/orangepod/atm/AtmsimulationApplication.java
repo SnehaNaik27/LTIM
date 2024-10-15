@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AtmsimulationApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(AtmsimulationApplication.class, args);
 	}
 

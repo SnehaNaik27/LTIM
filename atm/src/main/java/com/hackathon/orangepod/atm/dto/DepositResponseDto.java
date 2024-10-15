@@ -6,7 +6,7 @@ import lombok.Data;
 public class DepositResponseDto {
 
 	private Long accountId;
-	private String accountNumber;
+	private long accountNumber;
 	private Double balance;
 	
 	public Long getAccountId() {
@@ -15,10 +15,10 @@ public class DepositResponseDto {
 	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
 	}
-	public String getAccountNumber() {
+	public long getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(String accountNumber) {
+	public void setAccountNumber(long accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 	public Double getBalance() {

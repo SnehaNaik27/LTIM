@@ -1,41 +1,34 @@
 package com.hackathon.orangepod.atm.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name="Account")
 @Entity
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ACCOUNTID")
-    private Long accountId;
+    private long accountId;
     @Column(name="ACCOUNT_NUMBER")
-    private  String accountNumber;
+    private  long accountNumber;
     @Column(name="BALANCE")
-    private Double balance;
-	public Long getAccountId() {
-		return accountId;
-	}
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
-	}
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-	public Double getBalance() {
-		return balance;
-	}
-	public void setBalance(Double balance) {
-		this.balance = balance;
-	}
-    
-    
-    
+    private double balance;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class DepositRequestDto {
 
 	private Long accountId;
-	private String accountNumber;
+	private long accountNumber;
 	private Double amount;
 	private String token;
 	public Long getAccountId() {
@@ -19,10 +19,10 @@ public class DepositRequestDto {
 	public void setAccountId(Long accountId) {
 		this.accountId = accountId;
 	}
-	public String getAccountNumber() {
+	public long getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(String accountNumber) {
+	public void setAccountNumber(long accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 	public Double getAmount() {
