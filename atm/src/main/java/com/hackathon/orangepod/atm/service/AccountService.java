@@ -1,5 +1,7 @@
 package com.hackathon.orangepod.atm.service;
 
+import com.hackathon.orangepod.atm.dto.DepositRequestDto;
+import com.hackathon.orangepod.atm.dto.DepositResponseDto;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.model.Account;
@@ -24,4 +26,21 @@ public class AccountService {
         account.setBalance(account.getBalance() - amount);
         accountRepository.save(account);
     }
+    
+    
+	public DepositResponseDto deposit(DepositRequestDto depositRequestDto) throws AccountNotFoundException {
+		 Account account = accountRepository.findById(depositRequestDto.getAccountId())
+	                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+		    
+	        account.setBalance(account.getBalance() + depositRequestDto.getAmount());
+	        accountRepository.save(account);
+	        
+	        DepositResponseDto depositResponseDto = new DepositResponseDto();
+	        depositResponseDto.setAccountId(account.getAccountId());
+	        depositResponseDto.setAccountNumber(account.getAccountNumber());
+	        depositResponseDto.setBalance(account.getBalance());
+			return depositResponseDto;
+	    }
+		
 }
