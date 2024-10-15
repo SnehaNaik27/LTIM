@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-    //@Autowire
+
     public void logout( String token){
 //        boolean istokenInvalid=true;
 //        if(istokenInvalid){
@@ -100,7 +100,6 @@ public class UserServiceImpl implements UserService {
 //        }else {
 //            return "Logout failed: Invalid token";
 //        }
-
 
 
     }

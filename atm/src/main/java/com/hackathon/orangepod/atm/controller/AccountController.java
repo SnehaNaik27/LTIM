@@ -1,8 +1,9 @@
 package com.hackathon.orangepod.atm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hackathon.orangepod.atm.dto.DepositRequestDto;
-import com.hackathon.orangepod.atm.dto.DepositResponseDto;
+import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDTO;
+import com.hackathon.orangepod.atm.DTO.DepositRequestDto;
+import com.hackathon.orangepod.atm.DTO.DepositResponseDto;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.service.AccountService;
@@ -10,11 +11,7 @@ import com.hackathon.orangepod.atm.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -55,6 +52,13 @@ public class AccountController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		}
 	}
+
+    @GetMapping("/balance/accountBalance")
+    public ResponseEntity<Double> getBalance(@RequestBody AccountBalanceRequestDTO requestDTO){
+
+        double balance = accountService.getBalance(requestDTO);
+        return ResponseEntity.ok(balance);
+    }
 
     
 }
