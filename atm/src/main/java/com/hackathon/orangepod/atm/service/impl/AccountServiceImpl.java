@@ -1,10 +1,11 @@
 package com.hackathon.orangepod.atm.service.impl;
 
+import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
-import com.hackathon.orangepod.atm.DTO.DepositResponseDto;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
+import com.hackathon.orangepod.atm.mapper.AccountMapper;
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.model.User;
 import com.hackathon.orangepod.atm.model.UserToken;
@@ -29,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private UserTokenRepository userTokenRepository;
 
-    public void withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException, AccountNotFoundException {
+    public AccountDto withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException, AccountNotFoundException {
         Optional<UserToken> userToken = userTokenRepository.findByToken(requestDto.getToken());
 
         if (userToken.isEmpty()){
@@ -45,10 +46,11 @@ public class AccountServiceImpl implements AccountService {
 
         account.setBalance(account.getBalance() - requestDto.getAmount());
         accountRepository.save(account);
+        return AccountMapper.mapAccountToDto(account);
     }
 
 
-    public DepositResponseDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
+    public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
         Optional<UserToken> userToken = userTokenRepository.findByToken(depositRequestDto.getToken());
 
         if (userToken.isEmpty()){
@@ -61,11 +63,7 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(account.getBalance() + depositRequestDto.getAmount());
         accountRepository.save(account);
 
-        DepositResponseDto depositResponseDto = new DepositResponseDto();
-        depositResponseDto.setAccountId(account.getAccountId());
-        depositResponseDto.setAccountNumber(account.getAccountNumber());
-        depositResponseDto.setBalance(account.getBalance());
-        return depositResponseDto;
+        return AccountMapper.mapAccountToDto(account);
     }
 
     public double getBalance(AccountOperationRequestDTO requestDTO) throws InvalidTokenException, AccountNotFoundException {

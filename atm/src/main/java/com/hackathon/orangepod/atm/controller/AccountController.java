@@ -1,8 +1,8 @@
 package com.hackathon.orangepod.atm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
-import com.hackathon.orangepod.atm.DTO.DepositResponseDto;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -27,8 +27,8 @@ public class AccountController {
     @PostMapping("/withdraw")
     public ResponseEntity<String> withdraw(@RequestBody AccountOperationRequestDTO requestDto) {
         try {
-            accountService.withdraw(requestDto);
-            return ResponseEntity.ok("Withdrawal successful");
+            AccountDto responseDto = accountService.withdraw(requestDto);
+            return ResponseEntity.status(HttpStatus.OK).body("Withdrawal Successful: " + responseDto);
         } catch (InsufficientFundsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds");
         } catch (AccountNotFoundException e) {
@@ -44,10 +44,10 @@ public class AccountController {
 	public ResponseEntity<String> deposit(@RequestBody AccountOperationRequestDTO depositRequestDto) {
 
 		try {
-			DepositResponseDto depositResponseDto = accountService.deposit(depositRequestDto);
+			AccountDto depositResponseDto = accountService.deposit(depositRequestDto);
 
 			String response = jacksonObjectMapper.writeValueAsString(depositResponseDto);
-			return ResponseEntity.status(HttpStatus.OK).body(response);
+			return ResponseEntity.status(HttpStatus.OK).body("Deposit Successful: " + response);
 		} catch (AccountNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
 		} catch (InvalidTokenException e) {
