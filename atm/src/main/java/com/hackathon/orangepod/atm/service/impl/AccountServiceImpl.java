@@ -1,5 +1,6 @@
 package com.hackathon.orangepod.atm.service.impl;
 
+import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
@@ -66,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.mapAccountToDto(account);
     }
 
-    public double getBalance(AccountOperationRequestDTO requestDTO) throws InvalidTokenException, AccountNotFoundException {
+    public double getBalance(AccountBalanceRequestDto requestDTO) throws InvalidTokenException, AccountNotFoundException {
         Optional<UserToken> userToken = userTokenRepository.findByToken(requestDTO.getToken());
 
         if (userToken.isEmpty()){

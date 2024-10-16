@@ -3,6 +3,8 @@ package com.hackathon.orangepod.atm.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 
 @Setter
 @Getter
@@ -22,6 +24,12 @@ public class UserToken {
 
     @Column(name = "ISEXPIRED")
     private boolean isExpired;
+
+    @Column(name="WITHDRAWAL_LIMIT")
+    private double withdrawalLimit;
+    
+    @Column(name="WITHDRAWAL_DATE")
+    private Timestamp withdrawalDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "userId", nullable = false)

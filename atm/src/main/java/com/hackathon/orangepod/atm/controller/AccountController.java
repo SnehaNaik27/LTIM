@@ -1,6 +1,7 @@
 package com.hackathon.orangepod.atm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
@@ -58,7 +59,7 @@ public class AccountController {
 	}
 
     @GetMapping("/balance")
-    public ResponseEntity<String> getBalance(@RequestBody AccountOperationRequestDTO requestDTO){
+    public ResponseEntity<String> getBalance(@RequestBody AccountBalanceRequestDto requestDTO){
         try {
             double balance = accountService.getBalance(requestDTO);
             return ResponseEntity.ok(String.valueOf(balance));

@@ -1,5 +1,6 @@
 package com.hackathon.orangepod.atm.service;
 
+import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
@@ -12,7 +13,7 @@ public interface AccountService {
 
 	public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws AccountNotFoundException;
 
-	public double getBalance(AccountOperationRequestDTO requestDTO);
+	public double getBalance(AccountBalanceRequestDto requestDTO);
 
 	public Account save(Account account);
 
