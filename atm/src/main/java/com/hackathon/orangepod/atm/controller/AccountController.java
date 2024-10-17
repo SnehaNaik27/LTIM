@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/atm/accounts")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
 
     @Autowired
@@ -27,10 +28,13 @@ public class AccountController {
 	private ObjectMapper jacksonObjectMapper;
 
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(@RequestBody AccountOperationRequestDTO requestDto) {
+    public ResponseEntity<String> withdraw(@RequestParam Long userId, @RequestParam String token) {
         try {
-            AccountDto responseDto = accountService.withdraw(requestDto);
-            return ResponseEntity.status(HttpStatus.OK).body("Withdrawal Successful: " + responseDto);
+            AccountOperationRequestDTO requestDTO = AccountOperationRequestDTO.builder()
+                    .userId(userId)
+                    .token(token).build();
+            AccountDto responseDto = accountService.withdraw(requestDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(jacksonObjectMapper.writeValueAsString(responseDto));
         } catch (InvalidTokenException | WithdrawalLimitReachedException e) {
             return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
         }  catch (AccountNotFoundException e) {
@@ -43,10 +47,13 @@ public class AccountController {
     }
     
     @PostMapping("/deposit")
-	public ResponseEntity<String> deposit(@RequestBody AccountOperationRequestDTO depositRequestDto) {
+	public ResponseEntity<String> deposit(@RequestParam Long userId, @RequestParam String token) {
 
 		try {
-			AccountDto depositResponseDto = accountService.deposit(depositRequestDto);
+            AccountOperationRequestDTO requestDTO = AccountOperationRequestDTO.builder()
+                    .userId(userId)
+                    .token(token).build();
+			AccountDto depositResponseDto = accountService.deposit(requestDTO);
 
 			String response = jacksonObjectMapper.writeValueAsString(depositResponseDto);
 			return ResponseEntity.status(HttpStatus.OK).body("Deposit Successful: " + response);
@@ -60,10 +67,14 @@ public class AccountController {
 	}
 
     @GetMapping("/balance")
-    public ResponseEntity<String> getBalance(@RequestBody AccountOperationRequestDTO requestDTO){
+    public ResponseEntity<String> getBalance(@RequestParam Long userId, @RequestParam String token){
         try {
+            AccountOperationRequestDTO requestDTO = AccountOperationRequestDTO.builder()
+                    .userId(userId)
+                    .token(token).build();
             double balance = accountService.getBalance(requestDTO);
-            return ResponseEntity.ok(String.valueOf(balance));
+            AccountDto response = AccountDto.builder().balance(balance).build();
+            return ResponseEntity.ok(jacksonObjectMapper.writeValueAsString(response));
         } catch (AccountNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
         } catch (InvalidTokenException e) {
