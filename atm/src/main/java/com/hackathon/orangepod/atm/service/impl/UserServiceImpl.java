@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -75,12 +76,33 @@ public class UserServiceImpl implements UserService {
                     .message("Invalid login credentials")
                     .build();
         }
+
+        LocalDate currentDate=LocalDate.now(); //currentdate
+
+        //fetch the token for the user for current date (if exists)
+        UserToken existingToken=userTokenRepository.findByUserAndWithdrawalDate(request.getUserId(), currentDate);
+        UserToken userToken = new UserToken();
+
         //Create token on successful login
         String token = UUID.randomUUID().toString();
 
-        UserToken userToken = new UserToken();
         userToken.setUser(user.get());
         userToken.setToken(token);
+        userToken.setExpired(false);
+        userToken.setWithdrawalDate(LocalDate.now()); // set the date of today
+
+        if (existingToken != null){
+            //token exists for today, copy the withdrawl limit
+            if(!existingToken.isExpired()) {
+                existingToken.setExpired(true);
+                userTokenRepository.save(existingToken);
+            }
+            userToken.setWithdrawalLimit(existingToken.getWithdrawalLimit());
+        } else {
+            //set default withdrawal limit of 20000 if no token exists
+            userToken.setWithdrawalLimit(20000.00);
+        }
+        userToken.setWithdrawalDate(LocalDate.now());
         userTokenRepository.save(userToken);
 
         return UserLoginResponse.builder()

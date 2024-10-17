@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,9 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
 
     @Query("select t from UserToken t where t.isExpired = false And t.token= :token")
     Optional<UserToken> findByToken(@Param("token") String token);
+
+    @Query("SELECT ut FROM UserToken ut join ut.user u " +
+            "WHERE u.userId = :userId AND ut.withdrawalDate = :withdrawalDate"
+    )
+    UserToken findByUserAndWithdrawalDate(@Param("userId") Long userId, @Param("withdrawalDate") LocalDate withdrawalDate);
 }

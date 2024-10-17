@@ -1,19 +1,17 @@
 package com.hackathon.orangepod.atm.service.impl;
 
-import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
+
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
+import com.hackathon.orangepod.atm.exceptions.WithdrawalLimitReachedException;
 import com.hackathon.orangepod.atm.mapper.AccountMapper;
 import com.hackathon.orangepod.atm.model.Account;
-import com.hackathon.orangepod.atm.model.User;
-import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.AccountRepository;
-import com.hackathon.orangepod.atm.repository.UserRepository;
-import com.hackathon.orangepod.atm.repository.UserTokenRepository;
 import com.hackathon.orangepod.atm.service.AccountService;
+import com.hackathon.orangepod.atm.service.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,20 +24,20 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserTokenService userTokenService;
 
-    @Autowired
-    private UserTokenRepository userTokenRepository;
+    public AccountDto withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException,
+            AccountNotFoundException, WithdrawalLimitReachedException {
 
-    public AccountDto withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException, AccountNotFoundException {
-        Optional<UserToken> userToken = userTokenRepository.findByToken(requestDto.getToken());
-
-        if (userToken.isEmpty()){
+        if(!userTokenService.isUserTokenValid(requestDto)) {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
-
         Account account = accountRepository.findById(requestDto.getAccountId())
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        if(!userTokenService.isWithdrawalLimitValid(requestDto)) {
+            throw new WithdrawalLimitReachedException("Your today's withdrawal limit is reached");
+        }
 
         if (account.getBalance() < requestDto.getAmount()) {
             throw new InsufficientFundsException("Insufficient funds");
@@ -52,9 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
-        Optional<UserToken> userToken = userTokenRepository.findByToken(depositRequestDto.getToken());
-
-        if (userToken.isEmpty()){
+        if(!userTokenService.isUserTokenValid(depositRequestDto)) {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
 
@@ -67,10 +63,8 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.mapAccountToDto(account);
     }
 
-    public double getBalance(AccountBalanceRequestDto requestDTO) throws InvalidTokenException, AccountNotFoundException {
-        Optional<UserToken> userToken = userTokenRepository.findByToken(requestDTO.getToken());
-
-        if (userToken.isEmpty()){
+    public double getBalance(AccountOperationRequestDTO requestDTO) throws InvalidTokenException, AccountNotFoundException {
+        if(!userTokenService.isUserTokenValid(requestDTO)) {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
 

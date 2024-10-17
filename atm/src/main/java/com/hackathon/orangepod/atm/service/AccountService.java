@@ -13,7 +13,7 @@ public interface AccountService {
 
 	public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws AccountNotFoundException;
 
-	public double getBalance(AccountBalanceRequestDto requestDTO);
+	public double getBalance(AccountOperationRequestDTO requestDTO);
 
 	public Account save(Account account);
 

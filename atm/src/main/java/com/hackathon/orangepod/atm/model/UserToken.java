@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Setter
@@ -27,9 +29,9 @@ public class UserToken {
 
     @Column(name="WITHDRAWAL_LIMIT")
     private double withdrawalLimit;
-    
+
     @Column(name="WITHDRAWAL_DATE")
-    private Timestamp withdrawalDate;
+    private LocalDate withdrawalDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "userId", nullable = false)
