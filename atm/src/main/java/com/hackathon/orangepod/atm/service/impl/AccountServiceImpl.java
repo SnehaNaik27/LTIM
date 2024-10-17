@@ -32,20 +32,24 @@ public class AccountServiceImpl implements AccountService {
         if(!userTokenService.isUserTokenValid(requestDto)) {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
-        Account account = accountRepository.findById(requestDto.getAccountId())
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        //get account from user
+        Optional<Account>  account = accountRepository.findAccountByUserId(requestDto.getUserId());
+        if(account.isEmpty()) {
+            throw new AccountNotFoundException("Account not found");
+        }
+
+        if (account.get().getBalance() < requestDto.getAmount()) {
+            throw new InsufficientFundsException("Insufficient funds");
+        }
 
         if(!userTokenService.isWithdrawalLimitValid(requestDto)) {
             throw new WithdrawalLimitReachedException("Your today's withdrawal limit is reached");
         }
 
-        if (account.getBalance() < requestDto.getAmount()) {
-            throw new InsufficientFundsException("Insufficient funds");
-        }
-
-        account.setBalance(account.getBalance() - requestDto.getAmount());
-        accountRepository.save(account);
-        return AccountMapper.mapAccountToDto(account);
+        account.get().setBalance(account.get().getBalance() - requestDto.getAmount());
+        accountRepository.save(account.get());
+        return AccountMapper.mapAccountToDto(account.get());
     }
 
 
@@ -54,13 +58,16 @@ public class AccountServiceImpl implements AccountService {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
 
-        Account account = accountRepository.findById(depositRequestDto.getAccountId())
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        //get account from user
+        Optional<Account>  account = accountRepository.findAccountByUserId(depositRequestDto.getUserId());
+        if(account.isEmpty()) {
+            throw new AccountNotFoundException("Account not found");
+        }
 
-        account.setBalance(account.getBalance() + depositRequestDto.getAmount());
-        accountRepository.save(account);
+        account.get().setBalance(account.get().getBalance() + depositRequestDto.getAmount());
+        accountRepository.save(account.get());
 
-        return AccountMapper.mapAccountToDto(account);
+        return AccountMapper.mapAccountToDto(account.get());
     }
 
     public double getBalance(AccountOperationRequestDTO requestDTO) throws InvalidTokenException, AccountNotFoundException {
@@ -68,10 +75,9 @@ public class AccountServiceImpl implements AccountService {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
         }
 
-        Optional<Account> account = accountRepository.findById(requestDTO.getAccountId());
-
-        if (account.isEmpty()){
-
+        //get account from user
+        Optional<Account>  account = accountRepository.findAccountByUserId(requestDTO.getUserId());
+        if(account.isEmpty()) {
             throw new AccountNotFoundException("Account not found");
         }
 

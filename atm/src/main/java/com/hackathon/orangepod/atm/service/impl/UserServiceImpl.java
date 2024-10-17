@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
             userTokenRepository.save(userToken);
             return "Logout successful";
         } else {
-            return "Invalid token or user ID";
+            return "Invalid token";
         }
 
     }

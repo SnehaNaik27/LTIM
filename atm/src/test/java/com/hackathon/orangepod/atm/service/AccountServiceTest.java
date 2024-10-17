@@ -1,7 +1,9 @@
 package com.hackathon.orangepod.atm.service;
 
+import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
+import com.hackathon.orangepod.atm.exceptions.WithdrawalLimitReachedException;
 import com.hackathon.orangepod.atm.model.Account;
 import com.hackathon.orangepod.atm.repository.AccountRepository;
 import com.hackathon.orangepod.atm.service.impl.AccountServiceImpl;
@@ -23,6 +25,9 @@ public class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private UserTokenService userTokenService;
+
     @InjectMocks
     private AccountServiceImpl accountService;
 
@@ -35,37 +40,66 @@ public class AccountServiceTest {
         account.setBalance(1000.0);
     }
 
+    AccountOperationRequestDTO getRequest() {
+        return AccountOperationRequestDTO.builder()
+                .userId(1L)
+                .token("adjh-ashasjdh-asdjasdh")
+                .amount(100L)
+                .build();
+    }
+
     @Test
     void testWithdraw_Success() throws InsufficientFundsException, AccountNotFoundException {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
 
-        accountService.withdraw(1L, 500.0);
+        when(userTokenService.isUserTokenValid(any())).thenReturn(true);
+        when(accountRepository.findAccountByUserId(1L)).thenReturn(Optional.of(account));
+        when(userTokenService.isWithdrawalLimitValid(any())).thenReturn(true);
 
-        verify(accountRepository, times(1)).findById(1L);
+        accountService.withdraw(getRequest());
+
+        verify(accountRepository, times(1)).findAccountByUserId(1L);
         verify(accountRepository, times(1)).save(account);
     }
 
     @Test
     void testWithdraw_InsufficientFunds() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
-
+        AccountOperationRequestDTO request = getRequest();
+        request.setAmount(2000L);
+        when(userTokenService.isUserTokenValid(any())).thenReturn(true);
+        when(accountRepository.findAccountByUserId(1L)).thenReturn(Optional.of(account));
+        when(userTokenService.isWithdrawalLimitValid(any())).thenReturn(true);
         assertThrows(InsufficientFundsException.class, () -> {
-            accountService.withdraw(1L, 1500.0);
+            accountService.withdraw(request);
         });
 
-        verify(accountRepository, times(1)).findById(1L);
+       // verify(accountRepository, times(1)).findById(1L);
         verify(accountRepository, never()).save(account);
     }
 
     @Test
     void testWithdraw_AccountNotFound() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.empty());
+        when(userTokenService.isUserTokenValid(any())).thenReturn(true);
+        when(accountRepository.findAccountByUserId(1L)).thenReturn(Optional.empty());
 
         assertThrows(AccountNotFoundException.class, () -> {
-            accountService.withdraw(1L, 500.0);
+            accountService.withdraw(getRequest());
         });
 
-        verify(accountRepository, times(1)).findById(1L);
+        verify(accountRepository, times(1)).findAccountByUserId(1L);
+        verify(accountRepository, never()).save(account);
+    }
+
+    @Test
+    void testWithdraw_WithdrawalLimitReached() {
+        when(userTokenService.isUserTokenValid(any())).thenReturn(true);
+        when(accountRepository.findAccountByUserId(1L)).thenReturn(Optional.of(account));
+        when(userTokenService.isWithdrawalLimitValid(getRequest())).thenReturn(false);
+
+        assertThrows(WithdrawalLimitReachedException.class, () -> {
+            accountService.withdraw(getRequest());
+        });
+
+        verify(accountRepository, times(1)).findAccountByUserId(1L);
         verify(accountRepository, never()).save(account);
     }
 }
