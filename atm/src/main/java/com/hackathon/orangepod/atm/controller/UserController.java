@@ -39,5 +39,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: " + e.getMessage());
         }
     }
+
+    @GetMapping("/validateLogin")
+    public boolean validateLogin (@RequestBody UserLoginRequest request){
+        return userService.validateLogin(request);
+    }
+
+    @GetMapping("/validateContactNumber")
+    public boolean validateContactNumber (@RequestBody UserDto request){
+        return userService.validateContactNumber(request);
+    }
 }
 

@@ -33,15 +33,6 @@ public class UserServiceImpl implements UserService {
     private UserTokenRepository userTokenRepository;
 
     public ATMResponse createUser(UserDto userDTO) {
-        // Check if user already exists by contact number
-        if (userRepository.existsByContact(userDTO.getContact())) {
-            return ATMResponse.builder()
-                    .responseCode(AccountUtils.ACCOUNT_EXIST_CODE)
-                    .responseMessage(AccountUtils.ACCOUNT_EXIST_MESSAGE)
-                    .accountDto(null)
-                    .build();
-        }
-
         Account account = new Account();
         account.setAccountNumber(AccountUtils.generateAccountNumber());
         account.setBalance(0);
@@ -70,12 +61,6 @@ public class UserServiceImpl implements UserService {
     public UserLoginResponse login(UserLoginRequest request) {
         //Business logic to validate account and pin
         Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
-
-        if (user.isEmpty()) {
-            return UserLoginResponse.builder()
-                    .message("Invalid login credentials")
-                    .build();
-        }
 
         LocalDate currentDate = LocalDate.now(); //currentdate
 
@@ -126,6 +111,16 @@ public class UserServiceImpl implements UserService {
         } else {
             return "Invalid token";
         }
+    }
 
+    public boolean validateLogin(UserLoginRequest request) {
+        //Business logic to validate account and pin
+        Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
+        return user.isPresent();
+    }
+
+    public boolean validateContactNumber(UserDto request) {
+        /// Check if user already exists by contact number
+        return userRepository.existsByContact(request.getContact());
     }
 }

@@ -28,10 +28,12 @@ public class AccountController {
 	private ObjectMapper jacksonObjectMapper;
 
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(@RequestParam Long userId, @RequestParam String token) {
+    public ResponseEntity<String> withdraw(@RequestParam Long userId, @RequestParam String token,
+                                           @RequestParam Long amount) {
         try {
             AccountOperationRequestDTO requestDTO = AccountOperationRequestDTO.builder()
                     .userId(userId)
+                    .amount(amount)
                     .token(token).build();
             AccountDto responseDto = accountService.withdraw(requestDTO);
             return ResponseEntity.status(HttpStatus.OK).body(jacksonObjectMapper.writeValueAsString(responseDto));
@@ -47,12 +49,15 @@ public class AccountController {
     }
     
     @PostMapping("/deposit")
-	public ResponseEntity<String> deposit(@RequestParam Long userId, @RequestParam String token) {
+	public ResponseEntity<String> deposit(@RequestParam Long userId, @RequestParam String token,
+                                          @RequestParam Long amount) {
 
 		try {
             AccountOperationRequestDTO requestDTO = AccountOperationRequestDTO.builder()
                     .userId(userId)
-                    .token(token).build();
+                    .token(token)
+                    .amount(amount)
+                    .build();
 			AccountDto depositResponseDto = accountService.deposit(requestDTO);
 
 			String response = jacksonObjectMapper.writeValueAsString(depositResponseDto);
