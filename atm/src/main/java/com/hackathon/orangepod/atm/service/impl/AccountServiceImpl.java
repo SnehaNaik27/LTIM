@@ -52,7 +52,6 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.mapAccountToDto(account.get());
     }
 
-
     public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
         if(!userTokenService.isUserTokenValid(depositRequestDto)) {
             throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");

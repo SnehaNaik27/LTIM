@@ -67,7 +67,6 @@ public class AccountServiceTest {
         request.setAmount(2000L);
         when(userTokenService.isUserTokenValid(any())).thenReturn(true);
         when(accountRepository.findAccountByUserId(1L)).thenReturn(Optional.of(account));
-        when(userTokenService.isWithdrawalLimitValid(any())).thenReturn(true);
         assertThrows(InsufficientFundsException.class, () -> {
             accountService.withdraw(request);
         });

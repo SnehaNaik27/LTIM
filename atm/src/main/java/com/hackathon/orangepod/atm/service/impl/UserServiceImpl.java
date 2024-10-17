@@ -71,16 +71,16 @@ public class UserServiceImpl implements UserService {
         //Business logic to validate account and pin
         Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             return UserLoginResponse.builder()
                     .message("Invalid login credentials")
                     .build();
         }
 
-        LocalDate currentDate=LocalDate.now(); //currentdate
+        LocalDate currentDate = LocalDate.now(); //currentdate
 
         //fetch the token for the user for current date (if exists)
-        UserToken existingToken=userTokenRepository.findByUserAndWithdrawalDate(request.getUserId(), currentDate);
+        UserToken existingToken = userTokenRepository.findByUserAndWithdrawalDate(user.get().getUserId(), currentDate);
         UserToken userToken = new UserToken();
 
         //Create token on successful login
@@ -91,9 +91,10 @@ public class UserServiceImpl implements UserService {
         userToken.setExpired(false);
         userToken.setWithdrawalDate(LocalDate.now()); // set the date of today
 
-        if (existingToken != null){
-            //token exists for today, copy the withdrawl limit
-            if(!existingToken.isExpired()) {
+
+        if (existingToken != null) {
+            //token exists for today, copy the withdrawal limit
+            if (!existingToken.isExpired()) {
                 existingToken.setExpired(true);
                 userTokenRepository.save(existingToken);
             }
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserService {
             //set default withdrawal limit of 20000 if no token exists
             userToken.setWithdrawalLimit(20000.00);
         }
+
         userToken.setWithdrawalDate(LocalDate.now());
         userTokenRepository.save(userToken);
 
