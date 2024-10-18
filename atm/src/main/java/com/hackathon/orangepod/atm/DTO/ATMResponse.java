@@ -1,4 +1,4 @@
-package com.hackathon.orangepod.atm.DTO;
+package com.hackathon.orangepod.atm.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,6 @@ import java.util.List;
 public class ATMResponse {
     private String responseCode;
     private String responseMessage;
-    private AccountDto accountDto;
+    private List<AccountDto> accountDtos;
 
 }

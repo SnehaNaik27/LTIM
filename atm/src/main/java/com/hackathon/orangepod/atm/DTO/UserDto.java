@@ -1,4 +1,4 @@
-package com.hackathon.orangepod.atm.DTO;
+package com.hackathon.orangepod.atm.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
