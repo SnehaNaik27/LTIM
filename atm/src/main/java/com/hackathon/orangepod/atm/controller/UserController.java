@@ -19,11 +19,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-//    @PostMapping("/create")
-//    public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
-//        ATMResponse response = userService.createUser(userDto);
-//        return ResponseEntity.ok(response);
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
+        ATMResponse response = userService.createUser(userDto);
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/login")
     public UserLoginResponse login (@RequestBody UserLoginRequest request){

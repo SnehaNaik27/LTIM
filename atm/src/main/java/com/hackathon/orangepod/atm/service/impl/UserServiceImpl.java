@@ -33,31 +33,31 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserTokenRepository userTokenRepository;
 
-//    public ATMResponse createUser(UserDto userDTO) {
-//        Account account = new Account();
-//        account.setAccountNumber(AccountUtils.generateAccountNumber());
-//        account.setBalance(0);
-//
-//        // Create new User
-//        User newUser = User.builder()
-//                .name(userDTO.getName())
-//                .address(userDTO.getAddress())
-//                .contact(userDTO.getContact())
-//                .pin(userDTO.getPin())
-//                .build();
-//
-//        // Save User and Accounts
-//        Account savedAccount = accountServices.save(account);
-//        newUser.setAccounts(List.of(savedAccount));
-//        User savedUser = userRepository.save(newUser);
-//
-//        // Prepare Response
-//        return ATMResponse.builder()
-//                .responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
-//                .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
-//                .accountDtos(AccountMapper.mapAccountToDto(account)) // You can set account details here if needed
-//                .build();
-//    }
+    public ATMResponse createUser(UserDto userDTO) {
+        Account account = new Account();
+        account.setAccountNumber(AccountUtils.generateAccountNumber());
+        account.setBalance(0);
+
+        // Create new User
+        User newUser = User.builder()
+                .name(userDTO.getName())
+                .address(userDTO.getAddress())
+                .contact(userDTO.getContact())
+                .pin(userDTO.getPin())
+                .build();
+
+        // Save User and Accounts
+        Account savedAccount = accountServices.save(account);
+        newUser.setAccounts(List.of(savedAccount));
+        User savedUser = userRepository.save(newUser);
+
+        // Prepare Response
+        return ATMResponse.builder()
+                .responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
+                .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
+                .accountDtos(AccountMapper.mapAccountToDto(account)) // You can set account details here if needed
+                .build();
+    }
 
     public UserLoginResponse login(UserLoginRequest request) {
         //Business logic to validate account and pin
