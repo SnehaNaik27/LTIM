@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -33,6 +34,12 @@ public class User {
 
     @Column(name="CONTACT")
     private Long contact;
+
+    @Column(name="Attempts")
+    private int attempts;
+
+
+    private LocalDateTime lockedUntil;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<UserToken> token;

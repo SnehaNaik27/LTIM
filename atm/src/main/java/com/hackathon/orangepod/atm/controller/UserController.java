@@ -1,5 +1,6 @@
 package com.hackathon.orangepod.atm.controller;
 
+
 import com.hackathon.orangepod.atm.DTO.ATMResponse;
 import com.hackathon.orangepod.atm.DTO.UserDto;
 import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
@@ -18,15 +19,21 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
-        ATMResponse response = userService.createUser(userDto);
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<ATMResponse> createUser(@RequestBody UserDto userDto) {
+//        ATMResponse response = userService.createUser(userDto);
+//        return ResponseEntity.ok(response);
+//    }
 
     @PostMapping("/login")
     public UserLoginResponse login (@RequestBody UserLoginRequest request){
         return userService.login(request);
+    }
+
+
+    @PostMapping("/check-pin")
+    public String checkPin(@RequestBody UserLoginRequest request) {
+        return userService.checkPin(request);
     }
 
     @PostMapping("/logout/{userId}")

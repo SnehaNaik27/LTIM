@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 
 public interface UserService {
 
-    public ATMResponse createUser(UserDto userDTO);
+   // public ATMResponse createUser(UserDto userDTO);
 
     public UserLoginResponse login(UserLoginRequest request);
+
+    public String   checkPin(UserLoginRequest request);
 
     public boolean validateLogin(UserLoginRequest request);
 
