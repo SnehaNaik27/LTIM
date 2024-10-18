@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -34,6 +35,12 @@ public class User {
     @Column(name="CONTACT")
     private Long contact;
 
+    @Column(name="Attempts")
+    private int attempts;
+
+
+    private LocalDateTime lockedUntil;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<UserToken> token;
 
@@ -42,4 +49,15 @@ public class User {
     joinColumns = @JoinColumn(name="userId"), inverseJoinColumns = @JoinColumn(name="accountId"))
     private List<Account> accounts;
 
+    public User(String name, Long userId, String address, Long pin, Long contact, int attempts, LocalDateTime lockedUntil, List<UserToken> token, List<Account> accounts) {
+        this.name = name;
+        this.userId = userId;
+        this.address = address;
+        this.pin = pin;
+        this.contact = contact;
+        this.attempts = attempts;
+        this.lockedUntil = lockedUntil;
+        this.token = token;
+        this.accounts = accounts;
+    }
 }

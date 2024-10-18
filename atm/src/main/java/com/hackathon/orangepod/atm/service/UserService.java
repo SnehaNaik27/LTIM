@@ -17,6 +17,8 @@ public interface UserService {
 
     public UserLoginResponse login(UserLoginRequest request);
 
+    public String   checkPin(UserLoginRequest request);
+
     public boolean validateLogin(UserLoginRequest request);
 
     public String logout(Long userId);

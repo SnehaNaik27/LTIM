@@ -1,6 +1,7 @@
 package com.hackathon.orangepod.atm.service;
 
 
+
 import com.hackathon.orangepod.atm.DTO.ATMResponse;
 import com.hackathon.orangepod.atm.DTO.UserDto;
 import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
@@ -22,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,7 +93,7 @@ public class UserServiceTest {
 
         assertEquals(AccountUtils.ACCOUNT_EXIST_CODE, response.getResponseCode());
         assertEquals(AccountUtils.ACCOUNT_EXIST_MESSAGE, response.getResponseMessage());
-        assertNull(response.getAccountDto());
+        assertNull(response.getAccountDtos());
     }
 
     @Test
@@ -119,8 +121,8 @@ public class UserServiceTest {
         // Assertions
         assertEquals(AccountUtils.ACCOUNT_CREATION_SUCCESS, response.getResponseCode());
         assertEquals(AccountUtils.ACCOUNT_CREATION_MESSAGE, response.getResponseMessage());
-        assertNotNull(response.getAccountDto());
-        assertEquals(savedAccount.getAccountNumber(), response.getAccountDto().getAccountNumber());
+        assertNotNull(response.getAccountDtos());
+        assertEquals(savedAccount.getAccountNumber(), response.getAccountDtos().getAccountNumber());
     }
 
     @Test
@@ -139,7 +141,10 @@ public class UserServiceTest {
 
     @Test
     public void testLogin_ValidCredentials_NewToken() {
-        User user = new User(1L, "John Doe", "123 Main St", 1234L, 9876543210L, null, null);
+        User user = new  User( "John Doe",1L, "123 Main St", 1234L, 9876543210L,2,null, null,null);
+
+
+
         UserLoginRequest request = new UserLoginRequest();
         request.setPin(1234L);
         request.setAccountNumber(12345689L);
@@ -152,6 +157,87 @@ public class UserServiceTest {
         assertNotNull(response.getToken());
         assertEquals(1L, response.getUserId());
         verify(userTokenRepository, times(1)).save(any(UserToken.class));
+    }
+
+
+    @Test
+    public void testUserNotFound() {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setAccountNumber(12345L);
+
+        when(userRepository.findByAccountNumber(12345L)).thenReturn(Optional.empty());
+
+        String result = userService.checkPin(request);
+        assertEquals("User not found.", result);
+    }
+
+    @Test
+    public void testAccountLocked() {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setAccountNumber(12345L);
+
+        User user = new User();
+        user.setLockedUntil(LocalDateTime.now().plusMinutes(5));
+
+        when(userRepository.findByAccountNumber(12345L)).thenReturn(Optional.of(user));
+
+        String result = userService.checkPin(request);
+        assertEquals("Account is locked. Try again later.", result);
+    }
+
+    @Test
+    public void testIncorrectPin() {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setAccountNumber(12345L);
+        request.setPin(0L); // Corrected to use a proper long integer
+
+        User user = new User();
+        user.setPin(1234L);
+        user.setAttempts(1);
+
+        when(userRepository.findByAccountNumber(12345L)).thenReturn(Optional.of(user));
+
+        String result = userService.checkPin(request);
+        assertEquals("Incorrect PIN. Attempt 2", result);
+        assertEquals(2, user.getAttempts());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    public void testTooManyFailedAttempts() {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setAccountNumber(12345L);
+        request.setPin(0L); // Corrected to use a proper long integer
+
+        User user = new User();
+        user.setPin(1234L);
+        user.setAttempts(2);
+
+        when(userRepository.findByAccountNumber(12345L)).thenReturn(Optional.of(user));
+
+        String result = userService.checkPin(request);
+        assertEquals("Too many failed attempts. Account locked for 1 minute.", result);
+        assertEquals(0, user.getAttempts());
+        assertNotNull(user.getLockedUntil());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    public void testCorrectPin() {
+        UserLoginRequest request = new UserLoginRequest();
+        request.setAccountNumber(12345L);
+        request.setPin(1234L);
+
+        User user = new User();
+        user.setPin(1234L);
+        user.setAttempts(1);
+
+        when(userRepository.findByAccountNumber(12345L)).thenReturn(Optional.of(user));
+
+        String result = userService.checkPin(request);
+        assertEquals("PIN is correct. Login successful!", result);
+        assertEquals(0, user.getAttempts());
+        verify(userRepository).save(user);
     }
 
 }

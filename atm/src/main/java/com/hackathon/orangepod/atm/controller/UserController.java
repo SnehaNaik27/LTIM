@@ -1,5 +1,6 @@
 package com.hackathon.orangepod.atm.controller;
 
+
 import com.hackathon.orangepod.atm.DTO.ATMResponse;
 import com.hackathon.orangepod.atm.DTO.UserDto;
 import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
@@ -27,6 +28,12 @@ public class UserController {
     @PostMapping("/login")
     public UserLoginResponse login (@RequestBody UserLoginRequest request){
         return userService.login(request);
+    }
+
+
+    @PostMapping("/check-pin")
+    public String checkPin(@RequestBody UserLoginRequest request) {
+        return userService.checkPin(request);
     }
 
     @PostMapping("/logout/{userId}")
