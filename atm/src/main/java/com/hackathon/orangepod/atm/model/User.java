@@ -34,6 +34,9 @@ public class User {
 
     @Column(name="CONTACT")
     private Long contact;
+    
+    @Column(name="EMAIL")
+    private String email;
 
     @Column(name="Attempts")
     private int attempts;
