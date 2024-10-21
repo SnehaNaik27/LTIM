@@ -3,6 +3,7 @@ package com.hackathon.orangepod.atm.service.impl;
 
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
+import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -15,6 +16,7 @@ import com.hackathon.orangepod.atm.service.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -51,6 +53,23 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account.get());
         return AccountMapper.mapAccountToDto(account.get());
     }
+
+    public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount) {
+//        ReceiptDTO receipt = new ReceiptDTO();
+//        receipt.setAccountName(account.getAccountNumber());
+//        receipt.setDateTime(LocalDateTime.now());
+//        receipt.setAvailableBalance(account.getBalance());
+//        receipt.setWithdrawalBalance(withdrawalAmount);
+        //    return receipt;
+        return new ReceiptDTO(
+                LocalDateTime.now(),
+                account.getAccountNumber(),
+                account.getBalance(),
+                withdrawalAmount
+        );
+
+    }
+
 
     public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
         if(!userTokenService.isUserTokenValid(depositRequestDto)) {
