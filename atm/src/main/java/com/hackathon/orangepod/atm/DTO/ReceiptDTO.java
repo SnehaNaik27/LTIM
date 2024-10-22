@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Builder
 public class ReceiptDTO {
     private LocalDateTime dateTime;
-    private String accountName;
     private double availableBalance;
     private double withdrawalBalance;
+    private String account_Number;
 
 }

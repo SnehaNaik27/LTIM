@@ -50,10 +50,11 @@ public class AccountController {
     }
 
     @PostMapping("/receipt")
-    public ReceiptDTO getReceipt(@RequestBody AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException,
+    public ReceiptDTO getReceipt(@RequestParam Long userId, @RequestParam String token,
+                                 @RequestParam Long amount) throws InvalidTokenException, InsufficientFundsException,
             AccountNotFoundException, WithdrawalLimitReachedException {
-        AccountDto accountDto = accountService.withdraw(requestDto);
-        return accountService.generateReceipt(accountDto, requestDto.getAmount());
+       // AccountDto accountDto = accountService.withdraw(requestDto);
+        return accountService.generateReceipt(userId,token,amount);
     }
     
     @PostMapping("/deposit")

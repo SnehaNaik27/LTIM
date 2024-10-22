@@ -17,5 +17,6 @@ public interface AccountService {
 	public double getBalance(AccountOperationRequestDTO requestDTO);
 
 	public Account save(Account account);
-	public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount);
+
+	ReceiptDTO generateReceipt(Long userId, String token, Long amount);
 }
