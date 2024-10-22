@@ -15,5 +15,6 @@ public class UserDto {
     private String address;
     private long contact;
     private long pin;
+    private String email;
     private List<AccountDto> accounts;
 }
