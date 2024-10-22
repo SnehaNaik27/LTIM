@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
+import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -21,6 +22,12 @@ import com.hackathon.orangepod.atm.repository.AccountRepository;
 import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.service.AccountService;
 import com.hackathon.orangepod.atm.service.UserTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -77,12 +84,6 @@ public class AccountServiceImpl implements AccountService {
 		return AccountMapper.mapAccountToDto(account.get());
 	}
 
-	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
-			String notificationType, String emailMessage, Optional<User> userList) {
-		String emailSubject = "Transaction alert for your HSBC card";
-		emailService.sendTransactionEmail(userList.get().getEmail(), emailSubject, emailMessage);
-	}
-
 	public AccountDto deposit(AccountOperationRequestDTO depositRequestDto)
 			throws InvalidTokenException, AccountNotFoundException {
 		if (!userTokenService.isUserTokenValid(depositRequestDto)) {
@@ -128,5 +129,23 @@ public class AccountServiceImpl implements AccountService {
 
 	public Account save(Account account) {
 		return accountRepository.save(account);
+	}
+
+	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
+									   String notificationType, String emailMessage, Optional<User> userList) {
+		String emailSubject = "Transaction alert for your HSBC card";
+		emailService.sendTransactionEmail(userList.get().getEmail(), emailSubject, emailMessage);
+	}
+
+	public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount) {
+		ReceiptDTO receipt = ReceiptDTO.builder()
+				.accountName(account.getAccountNumber())
+				.dateTime(LocalDateTime.now())
+				.build();
+		receipt.setAccountName(account.getAccountNumber());
+		receipt.setDateTime(LocalDateTime.now());
+		receipt.setAvailableBalance(account.getBalance());
+		receipt.setWithdrawalBalance(withdrawalAmount);
+		return receipt;
 	}
 }

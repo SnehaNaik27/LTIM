@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         return ATMResponse.builder()
                 .responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
                 .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
-                .accountDtos(AccountMapper.mapAccountToDto(account)) // You can set account details here if needed
+                .accountDto(AccountMapper.mapAccountToDto(account)) // You can set account details here if needed
                 .build();
     }
 

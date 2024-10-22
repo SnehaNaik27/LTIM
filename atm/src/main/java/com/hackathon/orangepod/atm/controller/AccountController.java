@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
 import com.hackathon.orangepod.atm.DTO.AccountDto;
 import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
+import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -46,6 +47,13 @@ public class AccountController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
+    }
+
+    @PostMapping("/receipt")
+    public ReceiptDTO getReceipt(@RequestBody AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException,
+            AccountNotFoundException, WithdrawalLimitReachedException {
+        AccountDto accountDto = accountService.withdraw(requestDto);
+        return accountService.generateReceipt(accountDto, requestDto.getAmount());
     }
     
     @PostMapping("/deposit")
