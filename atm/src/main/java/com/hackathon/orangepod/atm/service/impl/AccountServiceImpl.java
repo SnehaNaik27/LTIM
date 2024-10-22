@@ -59,28 +59,6 @@ public class AccountServiceImpl implements AccountService {
 
 		Optional<User> userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
 
-
-    public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount) {
-//        ReceiptDTO receipt = new ReceiptDTO();
-//        receipt.setAccountName(account.getAccountNumber());
-//        receipt.setDateTime(LocalDateTime.now());
-//        receipt.setAvailableBalance(account.getBalance());
-//        receipt.setWithdrawalBalance(withdrawalAmount);
-        //    return receipt;
-        return new ReceiptDTO(
-                LocalDateTime.now(),
-                account.getAccountNumber(),
-                account.getBalance(),
-                withdrawalAmount
-        );
-
-    }
-
-
-    public AccountDto deposit(AccountOperationRequestDTO depositRequestDto) throws InvalidTokenException, AccountNotFoundException {
-        if(!userTokenService.isUserTokenValid(depositRequestDto)) {
-            throw new InvalidTokenException("User token is invalid or is expired. Please re-login.");
-        }
 		if (account.get().getBalance() < requestDto.getAmount()) {
 			String emailMessage = "Insufficient funds to withdraw ₹" + requestDto.getAmount() + ". Your balance is ₹"
 					+ account.get().getBalance() + ".";
@@ -104,12 +82,6 @@ public class AccountServiceImpl implements AccountService {
 		sendEmailNotification(account, requestDto, "withdraw", emailMessage, userList);
 
 		return AccountMapper.mapAccountToDto(account.get());
-	}
-
-	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
-			String notificationType, String emailMessage, Optional<User> userList) {
-		String emailSubject = "Transaction alert for your HSBC card";
-		emailService.sendTransactionEmail(userList.get().getEmail(), emailSubject, emailMessage);
 	}
 
 	public AccountDto deposit(AccountOperationRequestDTO depositRequestDto)
@@ -157,5 +129,23 @@ public class AccountServiceImpl implements AccountService {
 
 	public Account save(Account account) {
 		return accountRepository.save(account);
+	}
+
+	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
+									   String notificationType, String emailMessage, Optional<User> userList) {
+		String emailSubject = "Transaction alert for your HSBC card";
+		emailService.sendTransactionEmail(userList.get().getEmail(), emailSubject, emailMessage);
+	}
+
+	public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount) {
+		ReceiptDTO receipt = ReceiptDTO.builder()
+				.accountName(account.getAccountNumber())
+				.dateTime(LocalDateTime.now())
+				.build();
+		receipt.setAccountName(account.getAccountNumber());
+		receipt.setDateTime(LocalDateTime.now());
+		receipt.setAvailableBalance(account.getBalance());
+		receipt.setWithdrawalBalance(withdrawalAmount);
+		return receipt;
 	}
 }
