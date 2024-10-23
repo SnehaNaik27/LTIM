@@ -148,10 +148,10 @@ public class AccountServiceImpl implements AccountService {
 		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
 
 		ReceiptDTO receipt = ReceiptDTO.builder()
-				.account_Number(account.get().getAccountNumber())
+				.accountNumber(account.get().getAccountNumber())
 				.dateTime(LocalDateTime.now())
 				.build();
-		receipt.setAccount_Number(maskAccountNumber);
+		receipt.setAccountNumber(maskAccountNumber);
 		receipt.setDateTime(LocalDateTime.now());
 		receipt.setWithdrawalBalance(amount);
 		receipt.setAvailableBalance(account.get().getBalance());
@@ -169,5 +169,18 @@ public class AccountServiceImpl implements AccountService {
 		masked.append(accountNumber.substring(length - 4));
 		return masked.toString();
 	}
+	private String maskCardNumber(String cardNumber) {
+		int length = cardNumber.length();
+		if (length <= 4) {
+			return cardNumber; // No masking if account number is too short
+		}
+		StringBuilder masked = new StringBuilder();
+		for (int i = 0; i < length - 4; i++) {
+			masked.append('*');
+		}
+		masked.append(cardNumber.substring(length - 4));
+		return masked.toString();
+	}
+
 
 }

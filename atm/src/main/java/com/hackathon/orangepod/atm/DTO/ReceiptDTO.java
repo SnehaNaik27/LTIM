@@ -10,6 +10,6 @@ public class ReceiptDTO {
     private LocalDateTime dateTime;
     private double availableBalance;
     private double withdrawalBalance;
-    private String account_Number;
+    private String accountNumber;
 
 }

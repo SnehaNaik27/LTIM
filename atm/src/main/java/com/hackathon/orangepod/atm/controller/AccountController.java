@@ -51,8 +51,7 @@ public class AccountController {
 
     @PostMapping("/receipt")
     public ReceiptDTO getReceipt(@RequestParam Long userId, @RequestParam String token,
-                                 @RequestParam Long amount) throws InvalidTokenException, InsufficientFundsException,
-            AccountNotFoundException, WithdrawalLimitReachedException {
+                                 @RequestParam Long amount) {
        // AccountDto accountDto = accountService.withdraw(requestDto);
         return accountService.generateReceipt(userId,token,amount);
     }
