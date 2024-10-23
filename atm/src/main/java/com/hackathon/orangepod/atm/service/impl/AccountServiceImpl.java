@@ -1,16 +1,11 @@
 package com.hackathon.orangepod.atm.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
+import com.hackathon.orangepod.atm.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import com.hackathon.orangepod.atm.DTO.AccountDto;
-import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
-import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -22,11 +17,8 @@ import com.hackathon.orangepod.atm.repository.AccountRepository;
 import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.service.AccountService;
 import com.hackathon.orangepod.atm.service.UserTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 
 @Service
@@ -132,6 +124,8 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 
+
+
 	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
 									   String notificationType, String emailMessage, Optional<User> userList) {
 		String emailSubject = "Transaction alert for your HSBC card";
@@ -139,7 +133,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public ReceiptDTO generateReceipt(Long userId, String token, Long amount) {
+	public GetBalanceReceiptResponse generateCurrBalReceipt(Long userId, String token) {
 
 		Optional<Account> account = accountRepository.findAccountByUserId(userId);
 		if (account.isEmpty()) {
@@ -147,7 +141,26 @@ public class AccountServiceImpl implements AccountService {
 		}
 		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
 
-		ReceiptDTO receipt = ReceiptDTO.builder()
+		GetBalanceReceiptResponse receipt = GetBalanceReceiptResponse.builder()
+				.accountNumber(account.get().getAccountNumber())
+				.dateTime(LocalDateTime.now())
+				.build();
+		receipt.setAccountNumber(maskAccountNumber);
+		receipt.setDateTime(LocalDateTime.now());
+		receipt.setAvailableBalance(account.get().getBalance());
+		return receipt;
+	}
+
+	@Override
+	public ReceiptResponse generateReceipt(Long userId, String token, Long amount) {
+
+		Optional<Account> account = accountRepository.findAccountByUserId(userId);
+		if (account.isEmpty()) {
+			throw new AccountNotFoundException("Account not found");
+		}
+		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
+
+		ReceiptResponse receipt = ReceiptResponse.builder()
 				.accountNumber(account.get().getAccountNumber())
 				.dateTime(LocalDateTime.now())
 				.build();
@@ -157,6 +170,29 @@ public class AccountServiceImpl implements AccountService {
 		receipt.setAvailableBalance(account.get().getBalance());
 		return receipt;
 	}
+
+
+	@Override
+	public DepositeReceiptResponse generateDepositReceipt(Long userId, String token, Long amount) {
+
+		Optional<Account> account = accountRepository.findAccountByUserId(userId);
+		if (account.isEmpty()) {
+			throw new AccountNotFoundException("Account not found");
+		}
+		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
+
+		DepositeReceiptResponse receipt = DepositeReceiptResponse.builder()
+				.accountNumber(account.get().getAccountNumber())
+				.dateTime(LocalDateTime.now())
+				.build();
+		receipt.setAccountNumber(maskAccountNumber);
+		receipt.setDateTime(LocalDateTime.now());
+		receipt.setDepositBalance(amount);
+		receipt.setAvailableBalance(account.get().getBalance());
+		return receipt;
+	}
+
+
 	private String maskAccountNumber(String accountNumber) {
 		int length = accountNumber.length();
 		if (length <= 4) {

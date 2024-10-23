@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+
 @Data
 @Builder
-public class ReceiptDTO {
+public class GetBalanceReceiptResponse {
     private LocalDateTime dateTime;
     private double availableBalance;
-    private double withdrawalBalance;
     private String accountNumber;
 
 }
