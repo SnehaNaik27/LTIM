@@ -31,6 +31,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserTokenRepository userTokenRepository;
 
+    @Autowired
+    private OtpService otpService;
+
+
     public ATMResponse createUser(UserDto userDTO) {
         // Check if user already exists by contact number
         if (userRepository.existsByContact(userDTO.getContact())) {
@@ -70,7 +74,7 @@ public class UserServiceImpl implements UserService {
         //Business logic to validate account and pin
         Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             return UserLoginResponse.builder()
                     .message("Invalid login credentials")
                     .build();
@@ -90,7 +94,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    public String logout(Long userId){
+    public String logout(Long userId) {
         // Check if the token exists for the given account and is not expired
         Optional<UserToken> userTokenOpt = userTokenRepository.findTokenByUserId(userId);
         if (userTokenOpt.isPresent()) {
@@ -103,5 +107,42 @@ public class UserServiceImpl implements UserService {
             return "Invalid token or user ID";
         }
 
+    }
+
+    @Override
+    public String generateAndSendOtp(long userId) {
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (!optionalUser.isPresent()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        String otp = otpService.generateOtp();
+        //send an otp to user(contact or email)
+        //As of now for simplicity we are storing in user model
+
+        User user = optionalUser.get();
+        user.setPin(Long.valueOf(otp));
+        userRepository.save(user);
+        return otp; //real time its send to user
+    }
+
+    @Override
+    public Void updatePin(UpdatePinDto updatePinDto) throws IllegalArgumentException {
+        //Retrive user by id
+        Optional<User> optionalUser = userRepository.findById(updatePinDto.getUserId());
+        if (!optionalUser.isPresent()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        User user = optionalUser.get();
+        //validate the otp
+        if (!otpService.validateOtp(user.getOtp(), updatePinDto.getOtp())) {
+            throw new IllegalArgumentException("Invalid OTP");
+        }
+        //update the user pin
+        user.setPin(updatePinDto.getNewPin());
+        user.setOtp(null);
+        userRepository.save(user);
+        return null;
     }
 }

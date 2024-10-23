@@ -9,6 +9,7 @@ import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public interface UserService {
@@ -18,5 +19,10 @@ public interface UserService {
     public UserLoginResponse login(UserLoginRequest request);
 
     public String logout(Long userId);
+
+    String generateAndSendOtp(long userId);
+
+    Void updatePin(UpdatePinDto updatePinDto)throws IllegalArgumentException;
+
 }
 

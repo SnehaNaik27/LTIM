@@ -1,9 +1,7 @@
 package com.hackathon.orangepod.atm.controller;
 
-import com.hackathon.orangepod.atm.DTO.ATMResponse;
-import com.hackathon.orangepod.atm.DTO.UserDto;
-import com.hackathon.orangepod.atm.DTO.UserLoginRequest;
-import com.hackathon.orangepod.atm.DTO.UserLoginResponse;
+import com.hackathon.orangepod.atm.DTO.*;
+import com.hackathon.orangepod.atm.model.User;
 import com.hackathon.orangepod.atm.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +36,37 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: " + e.getMessage());
         }
     }
+
+    //@PutMapping("/updatePin")
+    //public ResponseEntity<String>updatePin(@RequestBody UpdatePinDto updatePinDto){
+      //  User updatedUser=userService.updatePin(updatePinDto);
+      //  if (updatedUser !=null){
+          //  return ResponseEntity.ok("PIN updated Successfully.");
+       // }else {
+         //   return ResponseEntity.status(404).body("User not found.");
+       // }
+   // }
+
+    @PostMapping("/generateOtp")
+    public String generateOtp(@RequestParam long userId){
+        try {
+            String otp=userService.generateAndSendOtp(userId);
+            return "OTP generated and sent successfully: "+otp;
+        }catch (IllegalArgumentException e){
+            return e.getMessage();
+        }
+    }
+
+    @PostMapping("/updatePin")
+    public String updatePin(@RequestBody UpdatePinDto updatePinDto){
+        try {
+            userService.updatePin(updatePinDto);
+            return "Pin updated Successfully";
+        }catch (IllegalArgumentException e){
+            return e.getMessage();
+        }
+    }
+
+
 }
 

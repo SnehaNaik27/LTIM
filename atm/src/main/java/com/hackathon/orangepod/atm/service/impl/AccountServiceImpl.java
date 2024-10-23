@@ -7,7 +7,6 @@ import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
 import com.hackathon.orangepod.atm.mapper.AccountMapper;
 import com.hackathon.orangepod.atm.model.Account;
-import com.hackathon.orangepod.atm.model.User;
 import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.AccountRepository;
 import com.hackathon.orangepod.atm.repository.UserRepository;
@@ -29,6 +28,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private UserTokenRepository userTokenRepository;
+
+
 
     public AccountDto withdraw(AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException, AccountNotFoundException {
         Optional<UserToken> userToken = userTokenRepository.findByToken(requestDto.getToken());
@@ -90,4 +91,8 @@ public class AccountServiceImpl implements AccountService {
     public Account save(Account account) {
         return accountRepository.save(account);
     }
+
+
+
+
 }

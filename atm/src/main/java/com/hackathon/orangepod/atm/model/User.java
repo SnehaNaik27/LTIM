@@ -34,6 +34,8 @@ public class User {
     @Column(name="CONTACT")
     private Long contact;
 
+    private String otp;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<UserToken> token;
 
