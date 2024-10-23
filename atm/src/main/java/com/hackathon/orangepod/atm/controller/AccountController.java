@@ -1,10 +1,7 @@
 package com.hackathon.orangepod.atm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
-import com.hackathon.orangepod.atm.DTO.AccountDto;
-import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
-import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
+import com.hackathon.orangepod.atm.DTO.*;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.exceptions.InvalidTokenException;
@@ -49,11 +46,21 @@ public class AccountController {
         }
     }
 
+    @PostMapping("/currBalReceipt")
+    public GetBalanceReceiptResponse getCurrBalReceipt(@RequestParam Long userId, @RequestParam String token) {
+        return accountService.generateCurrBalReceipt(userId,token);
+    }
+
     @PostMapping("/receipt")
-    public ReceiptDTO getReceipt(@RequestBody AccountOperationRequestDTO requestDto) throws InvalidTokenException, InsufficientFundsException,
-            AccountNotFoundException, WithdrawalLimitReachedException {
-        AccountDto accountDto = accountService.withdraw(requestDto);
-        return accountService.generateReceipt(accountDto, requestDto.getAmount());
+    public ReceiptResponse getReceipt(@RequestParam Long userId, @RequestParam String token,
+                                      @RequestParam Long amount) {
+        return accountService.generateReceipt(userId,token,amount);
+    }
+
+    @PostMapping("/depositeReceipt")
+    public DepositeReceiptResponse getDepositeReceipt(@RequestParam Long userId, @RequestParam String token,
+                                                      @RequestParam Long amount) {
+        return accountService.generateDepositReceipt(userId,token,amount);
     }
     
     @PostMapping("/deposit")

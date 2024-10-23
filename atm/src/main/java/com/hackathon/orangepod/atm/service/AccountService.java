@@ -1,9 +1,6 @@
 package com.hackathon.orangepod.atm.service;
 
-import com.hackathon.orangepod.atm.DTO.AccountBalanceRequestDto;
-import com.hackathon.orangepod.atm.DTO.AccountDto;
-import com.hackathon.orangepod.atm.DTO.AccountOperationRequestDTO;
-import com.hackathon.orangepod.atm.DTO.ReceiptDTO;
+import com.hackathon.orangepod.atm.DTO.*;
 import com.hackathon.orangepod.atm.exceptions.AccountNotFoundException;
 import com.hackathon.orangepod.atm.exceptions.InsufficientFundsException;
 import com.hackathon.orangepod.atm.model.Account;
@@ -17,5 +14,11 @@ public interface AccountService {
 	public double getBalance(AccountOperationRequestDTO requestDTO);
 
 	public Account save(Account account);
-	public ReceiptDTO generateReceipt(AccountDto account, double withdrawalAmount);
+
+	GetBalanceReceiptResponse generateCurrBalReceipt(Long userId, String token);
+
+	ReceiptResponse generateReceipt(Long userId, String token, Long amount);
+
+	DepositeReceiptResponse generateDepositReceipt(Long userId, String token, Long amount);
+
 }
