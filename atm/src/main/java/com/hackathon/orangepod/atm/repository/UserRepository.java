@@ -18,5 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByAccountAndPin(@Param("accountNumber") Long accountNumber, @Param("pin") Long pin);
 
     @Query("SELECT u FROM User u JOIN u.accounts a WHERE a.accountNumber = :accountNumber")
-    Optional<User> findByAccountNumber(@Param("accountNumber") Long accountNumber);
+    User findByAccountNumber(@Param("accountNumber") Long accountNumber);
 }

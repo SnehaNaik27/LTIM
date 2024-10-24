@@ -3,6 +3,7 @@ package com.hackathon.orangepod.atm.service.impl;
 import java.util.Optional;
 
 import com.hackathon.orangepod.atm.DTO.*;
+import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +50,12 @@ public class AccountServiceImpl implements AccountService {
 			throw new AccountNotFoundException("Account not found");
 		}
 
-		Optional<User> userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
 
 		if (account.get().getBalance() < requestDto.getAmount()) {
 			String emailMessage = "Insufficient funds to withdraw ₹" + requestDto.getAmount() + ". Your balance is ₹"
 					+ account.get().getBalance() + ".";
-			sendEmailNotification(account, requestDto, "withdraw", emailMessage, userList);
+			sendEmailNotification(emailMessage, userList);
 			throw new InsufficientFundsException("Insufficient funds");
 
 		}
@@ -62,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
 		if (!userTokenService.isWithdrawalLimitValid(requestDto)) {
 			String emailMessage = "Your today's withdrawal limit is reached for ₹" + requestDto.getAmount()
 					+ ". Your balance is ₹" + account.get().getBalance() + ".";
-			sendEmailNotification(account, requestDto, "withdraw", emailMessage, userList);
+			sendEmailNotification(emailMessage, userList);
 			throw new WithdrawalLimitReachedException("Your today's withdrawal limit is reached");
 		}
 
@@ -71,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
 
 		String emailMessage = "You have successfully withdrawn ₹" + requestDto.getAmount() + ". Your new balance is ₹"
 				+ account.get().getBalance() + ".";
-		sendEmailNotification(account, requestDto, "withdraw", emailMessage, userList);
+		sendEmailNotification(emailMessage, userList);
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -88,14 +89,14 @@ public class AccountServiceImpl implements AccountService {
 			throw new AccountNotFoundException("Account not found");
 		}
 
-		Optional<User> userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
 
 		account.get().setBalance(account.get().getBalance() + depositRequestDto.getAmount());
 		accountRepository.save(account.get());
 
 		String emailMessage = "You have successfully deposited ₹" + depositRequestDto.getAmount()
 				+ ". Your new balance is ₹" + account.get().getBalance() + ".";
-		sendEmailNotification(account, depositRequestDto, "withdraw", emailMessage, userList);
+		sendEmailNotification(emailMessage, userList);
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -126,10 +127,9 @@ public class AccountServiceImpl implements AccountService {
 
 
 
-	private void sendEmailNotification(Optional<Account> account, AccountOperationRequestDTO requestDto,
-									   String notificationType, String emailMessage, Optional<User> userList) {
+	private void sendEmailNotification(String emailMessage, User user) {
 		String emailSubject = "Transaction alert for your HSBC card";
-		emailService.sendTransactionEmail(userList.get().getEmail(), emailSubject, emailMessage);
+		emailService.sendTransactionEmail(user.getEmail(), emailSubject, emailMessage);
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
+		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
 
 		GetBalanceReceiptResponse receipt = GetBalanceReceiptResponse.builder()
 				.accountNumber(account.get().getAccountNumber())
@@ -158,7 +158,7 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
+		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
 
 		ReceiptResponse receipt = ReceiptResponse.builder()
 				.accountNumber(account.get().getAccountNumber())
@@ -179,7 +179,7 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = maskAccountNumber(account.get().getAccountNumber());
+		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
 
 		DepositeReceiptResponse receipt = DepositeReceiptResponse.builder()
 				.accountNumber(account.get().getAccountNumber())
@@ -191,32 +191,4 @@ public class AccountServiceImpl implements AccountService {
 		receipt.setAvailableBalance(account.get().getBalance());
 		return receipt;
 	}
-
-
-	private String maskAccountNumber(String accountNumber) {
-		int length = accountNumber.length();
-		if (length <= 4) {
-			return accountNumber; // No masking if account number is too short
-		}
-		StringBuilder masked = new StringBuilder();
-		for (int i = 0; i < length - 4; i++) {
-			masked.append('*');
-		}
-		masked.append(accountNumber.substring(length - 4));
-		return masked.toString();
-	}
-	private String maskCardNumber(String cardNumber) {
-		int length = cardNumber.length();
-		if (length <= 4) {
-			return cardNumber; // No masking if account number is too short
-		}
-		StringBuilder masked = new StringBuilder();
-		for (int i = 0; i < length - 4; i++) {
-			masked.append('*');
-		}
-		masked.append(cardNumber.substring(length - 4));
-		return masked.toString();
-	}
-
-
 }

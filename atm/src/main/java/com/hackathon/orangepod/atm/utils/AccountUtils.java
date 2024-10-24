@@ -11,7 +11,6 @@ public class AccountUtils {
 
     public static final String ACCOUNT_CREATION_SUCCESS = "002";
     public static final String ACCOUNT_CREATION_MESSAGE = "Account has been Successfully created";
-    private static Object issueDate;
 
     public static String generateAccountNumber(){
         Year currentYear = Year.now();
@@ -19,19 +18,15 @@ public class AccountUtils {
         int min = 100000;
         int max = 999999;
 
-        //genrate random number between min and max
+        //generate random number between min and max
         int randNumber = (int) Math.floor(Math.random() * (max - min + 1) + min);
 
-        //convert the current and randomnumber to string and contact.
+        //convert the current and random number to string and contact.
         String year = String.valueOf(currentYear);
         String randomNumber = String.valueOf(randNumber);
 
         // Concatenate year and random number to form the account number
-        String accountNumberStr = year + randomNumber;
-
-
-        // Convert the concatenated string to a long
-        return accountNumberStr;
+        return year + randomNumber;
 
     }
 
@@ -65,5 +60,14 @@ public class AccountUtils {
         return issueDate;
     }
 
-
+    public static String maskNumber(String accountNumber) {
+        int length = accountNumber.length();
+        if (length <= 4) {
+            return accountNumber; // No masking if account number is too short
+        }
+        StringBuilder masked = new StringBuilder();
+        masked.append("*".repeat(length - 4));
+        masked.append(accountNumber.substring(length - 4));
+        return masked.toString();
+    }
 }
