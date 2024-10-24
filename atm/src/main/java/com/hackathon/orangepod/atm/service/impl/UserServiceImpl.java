@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +37,12 @@ public class UserServiceImpl implements UserService {
     public ATMResponse createUser(UserDto userDTO) {
         Account account = new Account();
         account.setAccountNumber(AccountUtils.generateAccountNumber());
+        account.setCardNumber(AccountUtils.generateCardNumber());
+        account.setCvv(AccountUtils.generateCVV());
+        LocalDate issueDate= LocalDate.now();
+        account.setIssueDate(AccountUtils.calculateExpiryDate(issueDate));
+        LocalDate expiryDate = issueDate.plus(5, ChronoUnit.YEARS);
+        account.setExpiryDate(AccountUtils.calculateExpiryDate(expiryDate));
         account.setBalance(0);
 
         // Create new User

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,4 +16,8 @@ public class AccountDto {
     private String accountNumber;
     private double balance;
     private Long accountId;
+    private String cardNumber;
+    private String cvv;
+    private LocalDate issueDate;
+    private LocalDate expiryDate;
 }

@@ -10,6 +10,10 @@ public class AccountMapper {
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
                 .accountId(account.getAccountId())
+                .cardNumber(account.getCardNumber())
+                .cvv(account.getCvv())
+                .issueDate(account.getIssueDate())
+                .expiryDate(account.getExpiryDate())
                 .build();
 
     }
