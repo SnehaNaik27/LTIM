@@ -11,6 +11,6 @@ public class DepositeReceiptResponse {
     private LocalDateTime dateTime;
     private double availableBalance;
     private double depositBalance;
-    private String accountNumber;
+    private String cardNumber;
 
 }

@@ -50,12 +50,13 @@ public class AccountServiceImpl implements AccountService {
 			throw new AccountNotFoundException("Account not found");
 		}
 
-		User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		//User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		Optional<User> userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
 
 		if (account.get().getBalance() < requestDto.getAmount()) {
 			String emailMessage = "Insufficient funds to withdraw ₹" + requestDto.getAmount() + ". Your balance is ₹"
 					+ account.get().getBalance() + ".";
-			sendEmailNotification(emailMessage, userList);
+			sendEmailNotification(emailMessage, userList.get());
 			throw new InsufficientFundsException("Insufficient funds");
 
 		}
@@ -63,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
 		if (!userTokenService.isWithdrawalLimitValid(requestDto)) {
 			String emailMessage = "Your today's withdrawal limit is reached for ₹" + requestDto.getAmount()
 					+ ". Your balance is ₹" + account.get().getBalance() + ".";
-			sendEmailNotification(emailMessage, userList);
+			sendEmailNotification(emailMessage, userList.get());
 			throw new WithdrawalLimitReachedException("Your today's withdrawal limit is reached");
 		}
 
@@ -72,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
 
 		String emailMessage = "You have successfully withdrawn ₹" + requestDto.getAmount() + ". Your new balance is ₹"
 				+ account.get().getBalance() + ".";
-		sendEmailNotification(emailMessage, userList);
+		sendEmailNotification(emailMessage, userList.get());
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -89,14 +90,15 @@ public class AccountServiceImpl implements AccountService {
 			throw new AccountNotFoundException("Account not found");
 		}
 
-		User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		//User userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
+		Optional<User> userList = userRepository.findByAccountNumber(Long.parseLong(account.get().getAccountNumber()));
 
 		account.get().setBalance(account.get().getBalance() + depositRequestDto.getAmount());
 		accountRepository.save(account.get());
 
 		String emailMessage = "You have successfully deposited ₹" + depositRequestDto.getAmount()
 				+ ". Your new balance is ₹" + account.get().getBalance() + ".";
-		sendEmailNotification(emailMessage, userList);
+		sendEmailNotification(emailMessage, userList.get());
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -139,13 +141,13 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
+		String maskCardNumber = AccountUtils.maskNumber(account.get().getCardNumber());
 
 		GetBalanceReceiptResponse receipt = GetBalanceReceiptResponse.builder()
-				.accountNumber(account.get().getAccountNumber())
+				.cardNumber(account.get().getCardNumber())
 				.dateTime(LocalDateTime.now())
 				.build();
-		receipt.setAccountNumber(maskAccountNumber);
+		receipt.setCardNumber(maskCardNumber);
 		receipt.setDateTime(LocalDateTime.now());
 		receipt.setAvailableBalance(account.get().getBalance());
 		return receipt;
@@ -158,13 +160,13 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
+		String maskCardNumber = AccountUtils.maskNumber(account.get().getCardNumber());
 
 		ReceiptResponse receipt = ReceiptResponse.builder()
-				.accountNumber(account.get().getAccountNumber())
+				.cardNumber(account.get().getCardNumber())
 				.dateTime(LocalDateTime.now())
 				.build();
-		receipt.setAccountNumber(maskAccountNumber);
+		receipt.setCardNumber(maskCardNumber);
 		receipt.setDateTime(LocalDateTime.now());
 		receipt.setWithdrawalBalance(amount);
 		receipt.setAvailableBalance(account.get().getBalance());
@@ -179,13 +181,13 @@ public class AccountServiceImpl implements AccountService {
 		if (account.isEmpty()) {
 			throw new AccountNotFoundException("Account not found");
 		}
-		String maskAccountNumber = AccountUtils.maskNumber(account.get().getAccountNumber());
+		String maskCardNumber = AccountUtils.maskNumber(account.get().getCardNumber());
 
 		DepositeReceiptResponse receipt = DepositeReceiptResponse.builder()
-				.accountNumber(account.get().getAccountNumber())
+				.cardNumber(account.get().getCardNumber())
 				.dateTime(LocalDateTime.now())
 				.build();
-		receipt.setAccountNumber(maskAccountNumber);
+		receipt.setCardNumber(maskCardNumber);
 		receipt.setDateTime(LocalDateTime.now());
 		receipt.setDepositBalance(amount);
 		receipt.setAvailableBalance(account.get().getBalance());

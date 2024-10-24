@@ -10,6 +10,6 @@ public class ReceiptResponse {
     private LocalDateTime dateTime;
     private double availableBalance;
     private double withdrawalBalance;
-    private String accountNumber;
+    private String cardNumber;
 
 }

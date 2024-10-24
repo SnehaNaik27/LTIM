@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class UserLoginRequest {
 
-    private Long accountNumber;
+    private Long cardNumber;
     private Long pin;
 }

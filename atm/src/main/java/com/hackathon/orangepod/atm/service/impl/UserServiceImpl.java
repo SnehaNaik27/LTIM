@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     public UserLoginResponse login(UserLoginRequest request) {
         //Business logic to validate account and pin
-        Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
+        Optional<User> user = userRepository.findUserByAccountAndPin(request.getCardNumber(), request.getPin());
 
         LocalDate currentDate = LocalDate.now(); //currentdate
 
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public String checkPin(UserLoginRequest request) {
-        Optional<User> userOptional = userRepository.findByAccountNumber(request.getAccountNumber());
+        Optional<User> userOptional = userRepository.findByCardNumber(request.getCardNumber());
         if (!userOptional.isPresent()) {
             return "User not found.";
         }
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
     public boolean validateLogin(UserLoginRequest request) {
         //Business logic to validate account and pin
-        Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
+        Optional<User> user = userRepository.findUserByAccountAndPin(request.getCardNumber(), request.getPin());
         return user.isPresent();
     }
 

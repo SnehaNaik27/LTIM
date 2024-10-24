@@ -10,6 +10,6 @@ import java.time.LocalDateTime;
 public class GetBalanceReceiptResponse {
     private LocalDateTime dateTime;
     private double availableBalance;
-    private String accountNumber;
+    private String cardNumber;
 
 }

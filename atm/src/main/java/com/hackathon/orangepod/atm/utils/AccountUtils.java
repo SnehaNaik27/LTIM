@@ -60,14 +60,14 @@ public class AccountUtils {
         return issueDate;
     }
 
-    public static String maskNumber(String accountNumber) {
-        int length = accountNumber.length();
+    public static String maskNumber(String cardNumber) {
+        int length = cardNumber.length();
         if (length <= 4) {
-            return accountNumber; // No masking if account number is too short
+            return cardNumber; // No masking if account number is too short
         }
         StringBuilder masked = new StringBuilder();
         masked.append("*".repeat(length - 4));
-        masked.append(accountNumber.substring(length - 4));
+        masked.append(cardNumber.substring(length - 4));
         return masked.toString();
     }
 }
