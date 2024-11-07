@@ -41,6 +41,7 @@ public class User {
     @Column(name="Attempts")
     private int attempts;
 
+    private int otp;
 
     private LocalDateTime lockedUntil;
 

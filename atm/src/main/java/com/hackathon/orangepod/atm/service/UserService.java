@@ -24,5 +24,9 @@ public interface UserService {
     public String logout(Long userId);
 
     public boolean validateContactNumber(UserDto request);
+
+    public int generateAndSendOtp(long userId);
+
+    public void updatePin(UpdatePinDto updatePinDto)throws IllegalArgumentException;
 }
 

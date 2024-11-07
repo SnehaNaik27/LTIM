@@ -9,6 +9,7 @@ import com.hackathon.orangepod.atm.model.UserToken;
 import com.hackathon.orangepod.atm.repository.UserRepository;
 import com.hackathon.orangepod.atm.repository.UserTokenRepository;
 import com.hackathon.orangepod.atm.service.AccountService;
+import com.hackathon.orangepod.atm.service.OtpService;
 import com.hackathon.orangepod.atm.service.UserService;
 import com.hackathon.orangepod.atm.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
+
     @Autowired
     private UserRepository userRepository;
 
@@ -32,7 +34,13 @@ public class UserServiceImpl implements UserService {
     private AccountService accountServices;
 
     @Autowired
+    private OtpService otpService;
+
+    @Autowired
     private UserTokenRepository userTokenRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public ATMResponse createUser(UserDto userDTO) {
         Account account = new Account();
@@ -41,7 +49,7 @@ public class UserServiceImpl implements UserService {
         account.setCvv(AccountUtils.generateCVV());
         LocalDate issueDate= LocalDate.now();
         account.setIssueDate(AccountUtils.calculateExpiryDate(issueDate));
-        LocalDate expiryDate = issueDate.plus(5, ChronoUnit.YEARS);
+        LocalDate expiryDate = issueDate.plusYears(5);
         account.setExpiryDate(AccountUtils.calculateExpiryDate(expiryDate));
         account.setBalance(0);
 
@@ -56,7 +64,11 @@ public class UserServiceImpl implements UserService {
         // Save User and Accounts
         Account savedAccount = accountServices.save(account);
         newUser.setAccounts(List.of(savedAccount));
-        User savedUser = userRepository.save(newUser);
+        userRepository.save(newUser);
+
+        String emailSubject = "New User alert for your HSBC account";
+        String emailMessage = "Welcome to HSBC ATM services. Your account number is: " + account.getAccountNumber();
+        emailService.sendTransactionEmail(newUser.getEmail(), emailSubject, emailMessage);
 
         // Prepare Response
         return ATMResponse.builder()
@@ -69,6 +81,10 @@ public class UserServiceImpl implements UserService {
     public UserLoginResponse login(UserLoginRequest request) {
         //Business logic to validate account and pin
         Optional<User> user = userRepository.findUserByAccountAndPin(request.getAccountNumber(), request.getPin());
+
+        if (user.isEmpty()) {
+            return null;
+        }
 
         LocalDate currentDate = LocalDate.now(); //currentdate
 
@@ -108,12 +124,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public String checkPin(UserLoginRequest request) {
-        Optional<User> userOptional = userRepository.findByAccountNumber(request.getAccountNumber());
-        if (!userOptional.isPresent()) {
-            return "User not found.";
-        }
+        User user = userRepository.findByAccountNumber(request.getAccountNumber());
 
-        User user = userOptional.get();
         LocalDateTime now = LocalDateTime.now();
 
         if (user.getLockedUntil() != null && now.isBefore(user.getLockedUntil())) {
@@ -160,5 +172,41 @@ public class UserServiceImpl implements UserService {
     public boolean validateContactNumber(UserDto request) {
         /// Check if user already exists by contact number
         return userRepository.existsByContact(request.getContact());
+    }
+
+    @Override
+    public int generateAndSendOtp(long userId) {
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        int otp = otpService.generateOtp();
+        User user = optionalUser.get();
+        String emailSubject = "OTP alert for your HSBC account";
+        String emailMessage = "Your 6 digit OTP is: " + otp + " Note: Never share your OTP with anyone. " +
+                "Bank never asks for OTP.";
+        emailService.sendTransactionEmail(user.getEmail(), emailSubject, emailMessage);
+        user.setOtp(otp);
+        userRepository.save(user);
+        return otp; //real time its send to user
+    }
+
+    @Override
+    public void updatePin(UpdatePinDto updatePinDto) throws IllegalArgumentException {
+        //Retrieve user by id
+        Optional<User> optionalUser = userRepository.findById(updatePinDto.getUserId());
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        User user = optionalUser.get();
+        //validate the otp
+        if (!otpService.validateOtp(user.getOtp(), updatePinDto.getOtp())) {
+            throw new IllegalArgumentException("Invalid OTP");
+        }
+        //update the user pin
+        user.setPin(updatePinDto.getNewPin());
+        userRepository.save(user);
     }
 }

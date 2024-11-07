@@ -56,5 +56,15 @@ public class UserController {
     public boolean validateContactNumber (@RequestBody UserDto request){
         return userService.validateContactNumber(request);
     }
+
+    @PostMapping("/generateOtp")
+    public String generateOtp(@RequestParam long userId){
+        try {
+            int otp = userService.generateAndSendOtp(userId);
+            return "OTP generated and sent successfully: "+otp;
+        }catch (IllegalArgumentException e){
+            return e.getMessage();
+        }
+    }
 }
 

@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+	private final String EMAIL_SUBJECT = "Transaction alert for your HSBC card";
+
 	@Autowired
 	private AccountRepository accountRepository;
 
@@ -55,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
 		if (account.get().getBalance() < requestDto.getAmount()) {
 			String emailMessage = "Insufficient funds to withdraw ₹" + requestDto.getAmount() + ". Your balance is ₹"
 					+ account.get().getBalance() + ".";
-			sendEmailNotification(emailMessage, userList);
+			emailService.sendTransactionEmail(userList.getEmail(), EMAIL_SUBJECT, emailMessage);
 			throw new InsufficientFundsException("Insufficient funds");
 
 		}
@@ -63,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
 		if (!userTokenService.isWithdrawalLimitValid(requestDto)) {
 			String emailMessage = "Your today's withdrawal limit is reached for ₹" + requestDto.getAmount()
 					+ ". Your balance is ₹" + account.get().getBalance() + ".";
-			sendEmailNotification(emailMessage, userList);
+			emailService.sendTransactionEmail(userList.getEmail(), EMAIL_SUBJECT, emailMessage);
 			throw new WithdrawalLimitReachedException("Your today's withdrawal limit is reached");
 		}
 
@@ -72,7 +74,7 @@ public class AccountServiceImpl implements AccountService {
 
 		String emailMessage = "You have successfully withdrawn ₹" + requestDto.getAmount() + ". Your new balance is ₹"
 				+ account.get().getBalance() + ".";
-		sendEmailNotification(emailMessage, userList);
+		emailService.sendTransactionEmail(userList.getEmail(), EMAIL_SUBJECT, emailMessage);
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -96,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
 
 		String emailMessage = "You have successfully deposited ₹" + depositRequestDto.getAmount()
 				+ ". Your new balance is ₹" + account.get().getBalance() + ".";
-		sendEmailNotification(emailMessage, userList);
+		emailService.sendTransactionEmail(userList.getEmail(), EMAIL_SUBJECT, emailMessage);
 
 		return AccountMapper.mapAccountToDto(account.get());
 	}
@@ -124,13 +126,6 @@ public class AccountServiceImpl implements AccountService {
 		return accountRepository.save(account);
 	}
 
-
-
-
-	private void sendEmailNotification(String emailMessage, User user) {
-		String emailSubject = "Transaction alert for your HSBC card";
-		emailService.sendTransactionEmail(user.getEmail(), emailSubject, emailMessage);
-	}
 
 	@Override
 	public GetBalanceReceiptResponse generateCurrBalReceipt(Long userId, String token) {
