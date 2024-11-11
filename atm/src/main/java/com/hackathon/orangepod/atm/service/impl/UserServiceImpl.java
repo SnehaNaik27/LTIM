@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
                 .address(userDTO.getAddress())
                 .contact(userDTO.getContact())
                 .pin(userDTO.getPin())
+                .email(userDTO.getEmail())
                 .build();
 
         // Save User and Accounts
@@ -201,12 +202,13 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User not found");
         }
         User user = optionalUser.get();
-        //validate the otp
-        if (!otpService.validateOtp(user.getOtp(), updatePinDto.getOtp())) {
-            throw new IllegalArgumentException("Invalid OTP");
-        }
+
         //update the user pin
         user.setPin(updatePinDto.getNewPin());
         userRepository.save(user);
+
+        String emailSubject = "ATM Pin Updated for your HSBC account";
+        String emailMessage = "Your updated ATM Pin is: " + updatePinDto.getNewPin() + " Note: Never share your ATM Pin with anyone.";
+        emailService.sendTransactionEmail(user.getEmail(), emailSubject, emailMessage);
     }
 }
