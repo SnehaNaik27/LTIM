@@ -7,7 +7,10 @@ import com.hackathon.orangepod.atm.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.support.CustomSQLErrorCodesTranslation;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"})
 @RestController
@@ -75,12 +78,14 @@ public class UserController {
     }
 
     @PostMapping("/updatePin")
-    public String updatePin(@RequestBody UpdatePinDto updatePinDto){
+    public ResponseEntity<Object> updatePin(@RequestParam long userId, @RequestParam long newPin){
         try {
+            UpdatePinDto updatePinDto = UpdatePinDto.builder()
+            .userId(userId).newPin(newPin).build();
             userService.updatePin(updatePinDto);
-            return "User ATM Pin updated successfully";
+            return ResponseEntity.ok(Map.of("message", "User ATM Pin updated successfully"));
         }catch (IllegalArgumentException e){
-            return e.getMessage();
+            return (ResponseEntity<Object>) ResponseEntity.badRequest();
         }
     }
 

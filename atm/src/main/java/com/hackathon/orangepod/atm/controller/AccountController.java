@@ -76,7 +76,7 @@ public class AccountController {
 			AccountDto depositResponseDto = accountService.deposit(requestDTO);
 
 			String response = jacksonObjectMapper.writeValueAsString(depositResponseDto);
-			return ResponseEntity.status(HttpStatus.OK).body("Deposit Successful: " + response);
+			return ResponseEntity.ok("Deposit Successful: " + response);
 		} catch (AccountNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
 		} catch (InvalidTokenException e) {
